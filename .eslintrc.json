@@ -1,0 +1,30 @@
+{
+    "extends": "feng",
+    "parser": "babel-eslint",
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 7,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "plugins": ["react", "jsx-a11y", "import", "babel"],
+    "rules": {
+        "no-unused-vars": [2, { "vars": "local" }],
+        "camelcase": [0],
+        "valid-jsdoc": [0],
+        "require-jsdoc": [0],
+        "no-invalid-this": [0],
+        "babel/no-invalid-this": [2],
+        "indent": [2, 4, { "SwitchCase": 1 }],
+        "react/jsx-uses-vars": [2],
+        "react/jsx-uses-react": [2],
+        "react/jsx-indent": [2, 4],
+        "react/jsx-wrap-multilines": [2, { "declaration": false, "assignment": false, "arrow": false }],
+        "no-shadow": [0]        
+    }
+}
