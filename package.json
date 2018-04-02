@@ -5,9 +5,9 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "http://fex.staff.ifeng.com/fep/react_manage_boilerplate.git"
+    "url": ""
   },
-  "author": "zhanglin",
+  "author": "",
   "license": "ISC",
   "scripts": {
     "server": "node mockserver/index.js",
