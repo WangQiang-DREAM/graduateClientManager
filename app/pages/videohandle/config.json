@@ -1,0 +1,4 @@
+{
+    "stateKey": "videohandle",
+    "apis": { "get": "queryAllUsers", "del": "booksdel", "update": "booksupdate", "add": "booksadd" }
+}

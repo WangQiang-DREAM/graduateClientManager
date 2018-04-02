@@ -1,0 +1,115 @@
+import React from 'react';
+import styles from './search.css';
+import { connect } from 'react-redux';
+import { Row, Col, Button, Form } from 'antd';
+
+import { InputNumber, Input, DatePicker } from 'antd';
+
+import moment from 'moment';
+
+import { actions, asyncGet } from './models';
+import { formItemLayout, formatFormData } from './utils';
+const FormItem = Form.Item;
+
+class Search extends React.Component {
+    resetForm = () => {
+        this.props.form.resetFields();
+        this.props.changeSearchValues({});
+    };
+    handleSearch = e => {
+        e.preventDefault();
+        const values = formatFormData(this.props.form.getFieldsValue());
+        this.props.changeSearchValues(values);
+        this.props.resetPagination();
+        this.props.asyncGet();
+    };
+    render() {
+        const { getFieldDecorator } = this.props.form;
+        return (
+            <Form onSubmit={this.handleSearch}>
+                <Row className={styles.c_searchBox}>
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="序号">
+                            {getFieldDecorator('orderNumber', {})(
+                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
+                            )}
+                        </FormItem>
+                    </Col>
+
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="ID">
+                            {getFieldDecorator('id', {})(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
+                        </FormItem>
+                    </Col>
+
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="昵称">
+                            {getFieldDecorator('nickName', {})(<Input placeholder="请填写" />)}
+                        </FormItem>
+                    </Col>
+
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="关注数">
+                            {getFieldDecorator('followNum', {})(
+                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
+                            )}
+                        </FormItem>
+                    </Col>
+
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="粉丝数">
+                            {getFieldDecorator('fansNum', {})(
+                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
+                            )}
+                        </FormItem>
+                    </Col>
+
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="获赞数">
+                            {getFieldDecorator('likeNum', {})(
+                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
+                            )}
+                        </FormItem>
+                    </Col>
+
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="作品数">
+                            {getFieldDecorator('producedVideoNum', {})(
+                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
+                            )}
+                        </FormItem>
+                    </Col>
+
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="注册时间">
+                            {getFieldDecorator('registerTime', {})(
+                                <DatePicker style={{ width: '100%' }} placeholder="请选择" />,
+                            )}
+                        </FormItem>
+                    </Col>
+
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="操作">
+                            {getFieldDecorator('operation', {})(<Input placeholder="请填写" />)}
+                        </FormItem>
+                    </Col>
+
+                    <Col span={6} className={styles.m_tools}>
+                        <Button onClick={this.resetForm}>重置</Button>
+                        <Button type="primary" htmlType="submit">
+                            搜索
+                        </Button>
+                    </Col>
+                </Row>
+            </Form>
+        );
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+    asyncGet: () => dispatch(asyncGet()),
+    changeSearchValues: params => dispatch(actions.changeSearchValues(params)),
+    resetPagination: () => dispatch(actions.changePagination({ current: 1 })),
+});
+
+export default connect(null, mapDispatchToProps)(Form.create()(Search));

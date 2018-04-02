@@ -1,0 +1,15 @@
+.head{
+    width: 30px;
+    height: 30px;
+    border-radius: 50% !important;
+    display: inline-block;
+}
+.remark{
+    display: inline-block;
+    padding-right: 10px;
+}
+.avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}

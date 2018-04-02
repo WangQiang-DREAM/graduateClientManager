@@ -1,0 +1,9 @@
+{
+    "stateKey": "roommanage",
+    "apis": {
+        "get": "",
+        "del": "",
+        "update": "",
+        "add": ""
+    }
+}

@@ -1,0 +1,4 @@
+{
+    "stateKey": "tagsmanage",
+    "apis": { "get": "", "del": "booksdel", "update": "booksupdate", "add": "booksadd" }
+}
