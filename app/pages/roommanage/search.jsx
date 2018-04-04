@@ -1,12 +1,12 @@
 import React from 'react';
 import styles from './search.css';
 import { connect } from 'react-redux';
-import { Row, Col, Button, Form } from 'antd';
+import { Row, Col, Button, Form ,Select} from 'antd';
 
 import { InputNumber, Input, DatePicker } from 'antd';
 
 import moment from 'moment';
-
+const RangePicker = DatePicker.RangePicker;
 import { actions, asyncGet } from './models';
 import { formItemLayout, formatFormData } from './utils';
 const FormItem = Form.Item;
@@ -28,73 +28,61 @@ class Search extends React.Component {
         return (
             <Form onSubmit={this.handleSearch}>
                 <Row className={styles.c_searchBox}>
+                    
+
                     <Col span={6}>
-                        <FormItem {...formItemLayout} label="序号">
-                            {getFieldDecorator('orderNumber', {})(
-                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
+                        <FormItem {...formItemLayout} label="房间编号">
+                            {getFieldDecorator('roomOrder', {})(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
+                        </FormItem>
+                    </Col>
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="窗户方位">
+                            {getFieldDecorator('direction', {
+                            })(
+                                <Select style={{ width: '100%' }} placeholder="请选择">
+                                    <Option value={'南'}>朝南</Option>
+                                    <Option value={'北'}>朝北</Option>
+                                    <Option value={'东'}>朝东</Option>
+                                    <Option value={'西'}>朝西</Option>
+                                </Select>
                             )}
                         </FormItem>
                     </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="ID">
-                            {getFieldDecorator('id', {})(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="昵称">
-                            {getFieldDecorator('nickName', {})(<Input placeholder="请填写" />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="关注数">
-                            {getFieldDecorator('followNum', {})(
-                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
+                    <Col span={10}>
+                        <FormItem {...formItemLayout} label="添加时间">
+                            {getFieldDecorator('insertTime', {})(
+                                <RangePicker
+                                    ranges={{ 今天: [moment(), moment()], '本月': [moment(), moment().endOf('month')] }}
+                                    showTime
+                                    format="YYYY/MM/DD"
+                                />
                             )}
                         </FormItem>
                     </Col>
-
                     <Col span={6}>
-                        <FormItem {...formItemLayout} label="粉丝数">
-                            {getFieldDecorator('fansNum', {})(
-                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
+                        <FormItem {...formItemLayout} label="房间情况">
+                            {getFieldDecorator('roomStatus', {
+                            })(
+                                <Select style={{ width: '100%' }} placeholder="请选择">
+                                    <Option value={'0'}>可入住</Option>
+                                    <Option value={'1'}>已住满</Option>
+                                </Select>
                             )}
                         </FormItem>
                     </Col>
-
                     <Col span={6}>
-                        <FormItem {...formItemLayout} label="获赞数">
-                            {getFieldDecorator('likeNum', {})(
-                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
+                        <FormItem {...formItemLayout} label="房间状态">
+                            {getFieldDecorator('status', {
+                            })(
+                                <Select style={{ width: '100%' }} placeholder="请选择">
+                                    <Option value={'0'}>在线</Option>
+                                    <Option value={'1'}>已下线</Option>
+                                </Select>
                             )}
                         </FormItem>
                     </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="作品数">
-                            {getFieldDecorator('producedVideoNum', {})(
-                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
-                            )}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="注册时间">
-                            {getFieldDecorator('registerTime', {})(
-                                <DatePicker style={{ width: '100%' }} placeholder="请选择" />,
-                            )}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="操作">
-                            {getFieldDecorator('operation', {})(<Input placeholder="请填写" />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={6} className={styles.m_tools}>
+                    
+                    <Col span={12} className={styles.m_tools}>
                         <Button onClick={this.resetForm}>重置</Button>
                         <Button type="primary" htmlType="submit">
                             搜索

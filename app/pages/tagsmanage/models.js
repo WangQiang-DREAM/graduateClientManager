@@ -3,7 +3,7 @@ import { combineReducers } from 'redux';
 import { APIHOST } from '../../config';
 
 const urls = {
-    get: APIHOST + 'videoTag/returnAlltags',
+    get: APIHOST + 'user/queryAllUsers',
     del: APIHOST + 'booksdel',
     update: APIHOST + 'booksupdate',
     add: APIHOST + 'booksadd',

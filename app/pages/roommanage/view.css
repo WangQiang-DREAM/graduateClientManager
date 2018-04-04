@@ -1,0 +1,19 @@
+.user_avatar {
+    width: 70px;
+    height: 70px;
+    display: inline-block;
+    margin: 0 7px 7px 0;
+    transition: All 0.3s ease-in-out;
+    -webkit-transition: All 0.3s ease-in-out;
+    -moz-transition: All 0.3s ease-in-out;
+    -o-transition: All 0.3s ease-in-out;
+}
+
+.user_avatar:hover {
+    cursor: pointer;
+    transform: scale(2);
+    -webkit-transform: scale(2);
+    -moz-transform: scale(2);
+    -o-transform: scale(2);
+    -ms-transform: scale(2);
+}

@@ -1,25 +1,22 @@
 import moment from 'moment';
 
-export const enums = {};
+export const enums = {
+    roomStatus: [
+        { label: '可入住', value: '0' },
+        { label: '已住满', value: '1' },
+    ],
+    status: [
+        { label: '在线', value: '0' },
+        { label: '已下线', value: '1' },
+    ]
+};
 
 export const dataTypes = {
-    orderNumber: 'InputNumber',
 
-    id: 'InputNumber',
 
-    nickName: 'Input',
+    createTime: 'DatePicker',
 
-    followNum: 'InputNumber',
 
-    fansNum: 'InputNumber',
-
-    likeNum: 'InputNumber',
-
-    producedVideoNum: 'InputNumber',
-
-    registerTime: 'DatePicker',
-
-    operation: 'Input',
 };
 
 export const formatViewData = (key, values) => {
@@ -39,7 +36,7 @@ export const formatViewData = (key, values) => {
         }
         return result.join(',');
     } else if (dataTypes[key] === 'DatePicker') {
-        return moment(values).format('YYYY-MM-DD');
+        return moment(values).format('YYYY-MM-DD hh:mm');
     } else {
         return values;
     }

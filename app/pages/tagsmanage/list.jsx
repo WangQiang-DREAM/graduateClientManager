@@ -4,7 +4,7 @@ import { Table, Spin, Popconfirm } from 'antd';
 const { Column } = Table;
 import { actions, asyncGet, asyncDel } from './models';
 import { formatViewData } from './utils';
-
+import styles from './list.css'
 class List extends React.Component {
     componentDidMount() {
         this.props.asyncGet();
@@ -35,26 +35,84 @@ class List extends React.Component {
                     onChange={this.changeHandle}>
 
                     <Column
-                        title="标签ID"
-                        dataIndex="key"
-                        key="key"
-                        sorter={false}
+                        title="用户ID"
+                        dataIndex="uid"
+                        key="uid"
                         render={text => {
-                            return formatViewData('key', text);
+                            return formatViewData('uid', text);
                         }}
                     />
+
                     <Column
-                        title="标签名称"
-                        dataIndex="title"
-                        key="title"
-                        sorter={false}
+                        title="姓名"
+                        dataIndex="name"
+                        key="name"
                         render={text => {
-                            return formatViewData('title', text);
+                            return formatViewData('name', text);
                         }}
                     />
 
+                    <Column
+                        title="头像"
+                        dataIndex="avatar"
+                        key="avatar"
+                        render={text => {
+                            return (
+                                <div className={styles.avatar_div}>
+                                    <img src={formatViewData('avatar', text)} className={styles.user_avatar} />
+                                </div>
+                            );
+                        }}
+                    />
 
-                   
+                    <Column
+                        title="性别"
+                        dataIndex="sex"
+                        key="sex"
+                        render={text => {
+                            return formatViewData('sex', text);
+                        }}
+                    />
+
+                    <Column
+                        title="年龄"
+                        dataIndex="age"
+                        key="age"
+                        sorter={true}
+                        render={text => {
+                            return formatViewData('age', text);
+                        }}
+                    />
+
+                    <Column
+                        title="房间号"
+                        dataIndex="roomId"
+                        key="roomId"
+                        render={text => {
+                            return formatViewData('roomId', text);
+                        }}
+                    />
+
+                    <Column
+                        title="注册时间"
+                        dataIndex="registerTime"
+                        key="registerTime"
+                        sorter={true}
+                        render={text => {
+                            return formatViewData('registerTime', text);
+                        }}
+                    />
+
+                    <Column
+                        title="类型"
+                        dataIndex="userType"
+                        key="userType"
+                        sorter={false}
+                        render={text => {
+                            return formatViewData('userType', text);
+                        }}
+                    />
+                    <Column title="操作" key="action" render={this.renderAction} />
                 </Table>
             </Spin>
         );

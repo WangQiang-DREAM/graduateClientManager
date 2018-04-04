@@ -1,17 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Spin, Popconfirm } from 'antd';
+import { Table, Spin, Popconfirm ,Button} from 'antd';
 const { Column } = Table;
-import { actions, asyncGet, asyncDel } from './models';
+import { actions, asyncGet, asyncUpdate } from './models';
 import { formatViewData } from './utils';
-
+import styles from './list.css';
 class List extends React.Component {
     componentDidMount() {
         this.props.asyncGet();
     }
-    viewHandler = id => {
+    viewHandler = image => {
         this.props.viewShow();
-        this.props.changeCurrentSelectId(id);
+        this.props.CurrentRoomDetail(image);
     };
     editHandler = id => {
         this.props.editShow();
@@ -22,35 +22,67 @@ class List extends React.Component {
         this.props.changeSort({ key: sorter.field, order: sorter.order });
         this.props.asyncGet();
     };
-    renderAction = (text, record) => (
-        <span>
-            <a
-                href="#"
-                onClick={() => {
-                    this.viewHandler(record.id);
-                }}>
-                查看
-            </a>
-            <span className="ant-divider" />
-            <a
-                href="#"
-                onClick={() => {
-                    this.editHandler(record.id);
-                }}>
-                编辑
-            </a>
-            <span className="ant-divider" />
-            <Popconfirm
-                title="确定删除该条信息？"
-                okText="确定删除"
-                cancelText="取消删除"
-                onConfirm={() => {
-                    this.props.asyncDel(record.id);
-                }}>
-                <a href="#">删除</a>
-            </Popconfirm>
-        </span>
-    );
+    offLine = roomOrder => {
+        let content = {
+            status:'1',
+            roomOrder:roomOrder
+        };
+        this.props.updateStatus(content)
+    }
+    onLine = roomOrder => {
+        let content = {
+            status: '0',
+            roomOrder: roomOrder
+        };
+        this.props.updateStatus(content)
+    }
+    renderAction = (text, record) => {
+        if ( record.status == '0') {
+            return (
+                <span>
+                    <Button
+                        size="small"
+                        onClick={() => {
+                            this.viewHandler(record.image);
+                        }}>
+                        详情
+                    </Button>
+                    <span className="ant-divider" />
+                    <Popconfirm
+                        title="确定执行？"
+                        okText="确定"
+                        cancelText="取消"
+                        onConfirm={() => {
+                            this.offLine(record.roomOrder)
+                        }}>
+                        <Button type="danger" size="small" >下线</Button>
+                    </Popconfirm>
+                </span>
+            );
+        } else {
+            return (
+                <span>
+                    <Button
+                        size="small"
+                        onClick={() => {
+                            this.viewHandler(record.image);
+                        }}>
+                        详情
+                    </Button>
+                    <span className="ant-divider" />
+                    <Popconfirm
+                        title="确定执行？"
+                        okText="确定"
+                        cancelText="取消"
+                        onConfirm={() => {
+                            this.onLine(record.roomOrder)
+                        }}>
+                        <button className={styles.success}>上线</button>
+                    </Popconfirm> 
+                </span>
+            );
+        }
+    };
     render() {
         const { isLoading, list, pagination } = this.props;
         return (
@@ -60,94 +92,110 @@ class List extends React.Component {
                     pagination={{
                         ...pagination,
                     }}
+                    rowKey="roomOrder"
                     onChange={this.changeHandle}>
                     <Column
-                        title="序号"
-                        dataIndex="orderNumber"
-                        key="orderNumber"
+                        title="房间编号"
+                        dataIndex="roomOrder"
+                        key="roomOrder"
+                        render={text => {
+                            return formatViewData('roomOrder', text);
+                        }}
+                    />
+
+                    <Column
+                        title="窗户方位"
+                        dataIndex="direction"
+                        key="direction"
+                        render={text => {
+                            return formatViewData('direction', text);
+                        }}
+                    />
+                    <Column
+                        title="总床位数"
+                        dataIndex="totalNum"
+                        key="totalNum"
                         sorter={true}
                         render={text => {
-                            return formatViewData('orderNumber', text);
+                            return formatViewData('totalNum', text);
                         }}
                     />
 
                     <Column
-                        title="ID"
-                        dataIndex="id"
-                        key="id"
-                        sorter={false}
+                        title="已入住数"
+                        dataIndex="userNum"
+                        sorter={true}
+                        key="userNum"
                         render={text => {
-                            return formatViewData('id', text);
+                            return formatViewData('userNum', text);
                         }}
                     />
-
                     <Column
-                        title="昵称"
-                        dataIndex="nickName"
-                        key="nickName"
-                        sorter={false}
+                        title="评论数"
+                        dataIndex="commentNum"
+                        sorter={true}
+                        key="commentNum"
                         render={text => {
-                            return formatViewData('nickName', text);
+                            return formatViewData('commentNum', text);
                         }}
                     />
 
                     <Column
-                        title="关注数"
-                        dataIndex="followNum"
-                        key="followNum"
+                        title="负责人"
+                        dataIndex="creator"
+                        key="creator"
+                        render={text => {
+                            return formatViewData('creator', text);
+                        }}
+                    />
+
+                    <Column
+                        title="上传时间"
+                        dataIndex="createTime"
+                        key="createTime"
                         sorter={true}
                         render={text => {
-                            return formatViewData('followNum', text);
+                            return formatViewData('createTime', text);
                         }}
                     />
-
                     <Column
-                        title="粉丝数"
-                        dataIndex="fansNum"
-                        key="fansNum"
-                        sorter={true}
+                        title="房间情况"
+                        dataIndex="roomStatus"
+                        key="roomStatus"
                         render={text => {
-                            return formatViewData('fansNum', text);
+                            if (text == '0') {
+                                return (
+                                    <span style={{ color: '#00AA00' }}>
+                                        {formatViewData('roomStatus', text)}
+                                    </span>
+                                );
+                            } else {
+                                return (
+                                    <span style={{ color: 'red' }}>
+                                        {formatViewData('roomStatus', text)}
+                                    </span>
+                                )
+                            }
                         }}
                     />
-
                     <Column
-                        title="获赞数"
-                        dataIndex="likeNum"
-                        key="likeNum"
-                        sorter={true}
+                        title="房间状态"
+                        dataIndex="status"
+                        key="status"
                         render={text => {
-                            return formatViewData('likeNum', text);
-                        }}
-                    />
-
-                    <Column
-                        title="作品数"
-                        dataIndex="producedVideoNum"
-                        key="producedVideoNum"
-                        sorter={true}
-                        render={text => {
-                            return formatViewData('producedVideoNum', text);
-                        }}
-                    />
-
-                    <Column
-                        title="注册时间"
-                        dataIndex="registerTime"
-                        key="registerTime"
-                        sorter={true}
-                        render={text => {
-                            return formatViewData('registerTime', text);
-                        }}
-                    />
-
-                    <Column
-                        title="操作"
-                        dataIndex="operation"
-                        key="operation"
-                        sorter={false}
-                        render={text => {
-                            return formatViewData('operation', text);
+                            if (text =='0') {
+                                return (
+                                    <span style={{ color: '#00AA00' }}>
+                                        {formatViewData('status', text)}
+                                    </span>
+                                );
+                            } else {
+                                return (
+                                    <span style={{ color: 'red' }}>
+                                        {formatViewData('status', text)}
+                                    </span>
+                                )
+                            }
                         }}
                     />
 
@@ -170,9 +218,10 @@ const mapDispatchToProps = dispatch => ({
     viewShow: () => dispatch(actions.changeUiStatus({ isViewShow: true })),
     addShow: () => dispatch(actions.changeUiStatus({ isAddShow: true })),
     editShow: () => dispatch(actions.changeUiStatus({ isUpdateShow: true })),
-    changeCurrentSelectId: id => dispatch(actions.changeCurrentSelectId(id)),
+    CurrentRoomDetail: image => dispatch(actions.getcurrentRoomDetail(image)),
     changePagination: pagination => dispatch(actions.changePagination(pagination)),
     changeSort: data => dispatch(actions.changeSort(data)),
+    updateStatus: content => dispatch(asyncUpdate(content))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

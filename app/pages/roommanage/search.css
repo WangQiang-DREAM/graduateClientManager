@@ -11,8 +11,8 @@
     & .m_tools {
         text-align: center;
         & button {
-            padding-left: 15px;
-            padding-right: 15px;
+            padding-left: 25px;
+            padding-right: 25px;
             margin: 0 20px;
         }
     }

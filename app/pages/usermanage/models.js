@@ -4,7 +4,7 @@ import { notification } from 'antd';
 import { APIHOST } from '../../config';
 
 const urls = {
-    get: APIHOST + 'user/queryAllUser',
+    get: APIHOST + 'user/queryAllManager',
     del: APIHOST + 'user/delManager',
     update: APIHOST + '',
     add: APIHOST + 'user/addManager',

@@ -14,7 +14,19 @@ class Container extends React.Component {
                 <Search />
                 <div style={{textAlign: 'right', paddingBottom: 20}}>
                 </div>
-                <List />
+                <div
+                    style={{
+                        background: '#f0f2f5',
+                        padding: '25px'
+                    }}>
+                    <div
+                        style={{
+                            background: '#fff',
+                            padding: '15px'
+                        }}>
+                        <List />
+                    </div>
+                </div>
             </div>
         );
     }
