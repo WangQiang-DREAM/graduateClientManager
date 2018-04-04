@@ -9,6 +9,7 @@ import videohandle from './pages/videohandle/models';
 import usermanage from './pages/usermanage/models';
 import roommanage from './pages/roommanage/models';
 import home from './pages/home/models';
+import ordermanage from './pages/ordermanage/models';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -22,6 +23,7 @@ export default createStore(
         usermanage,
         roommanage,
         home,
+        ordermanage,
     }),
     composeEnhancers(applyMiddleware(thunk)),
 );

@@ -1,0 +1,4 @@
+{
+    "stateKey": "ordermanage",
+    "apis": { "get": "", "del": "booksdel", "update": "booksupdate", "add": "booksadd" }
+}

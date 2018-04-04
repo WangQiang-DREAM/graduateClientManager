@@ -5,7 +5,7 @@ import Login from './pages/login/';
 import Usermanage from './pages/usermanage/';
 import Videohandle from './pages/videohandle/';
 import Roommanage from './pages/roommanage/';
-
+import Ordermanage from './pages/ordermanage/';
 
 /**
  * 计算当前目录的权限，当前目录的权限包括当前目录下面children及其以下的目录的权限。
@@ -122,7 +122,16 @@ export const routerTree = formatRouteTreeByRoles([
                 iconType: 'video-camera',
                 roles: [1, 2],
             },
-            
+            {
+                path: '/ordermanage',
+                comp: Ordermanage,
+                exact: true,
+                value: '预约管理',
+                isDisplay: true,
+                type: 'leaf',
+                iconType: 'video-camera',
+                roles: [1, 2],
+            },
             {
                 path: '/tagsmanage',
                 comp: Tagsmanage,

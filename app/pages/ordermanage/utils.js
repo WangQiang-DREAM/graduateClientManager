@@ -1,20 +1,25 @@
 import moment from 'moment';
 
-export const enums = {
-    sex: [
-        { label: '男', value: 0 },
-        { label: '女', value: 1 },
-    ],
-    userType: [
-        { label: '未入住', value: '1' },
-        { label: '已入住', value: '2' },
-    ]
-};
+export const enums = {};
 
 export const dataTypes = {
-   
+    orderNumber: 'InputNumber',
+
+    id: 'InputNumber',
+
+    nickName: 'Input',
+
+    followNum: 'InputNumber',
+
+    fansNum: 'InputNumber',
+
+    likeNum: 'InputNumber',
+
+    producedVideoNum: 'InputNumber',
+
     registerTime: 'DatePicker',
 
+    operation: 'Input',
 };
 
 export const formatViewData = (key, values) => {
@@ -55,6 +60,6 @@ export const formatFormData = values => {
 };
 
 export const formItemLayout = {
-    labelCol: { span: 8, offset: 2 },
+    labelCol: { span: 4, offset: 2 },
     wrapperCol: { span: 14 },
 };
