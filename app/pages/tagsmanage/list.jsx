@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Spin, Popconfirm } from 'antd';
+import { Table, Spin, Popconfirm ,Button} from 'antd';
 const { Column } = Table;
 import { actions, asyncGet, asyncDel } from './models';
 import { formatViewData } from './utils';
@@ -22,13 +22,27 @@ class List extends React.Component {
         this.props.changeSort({ key: sorter.field, order: sorter.order });
         this.props.asyncGet();
     };
-    
+    renderAction = (text, record) => {
+        if (record.userType == '2') {
+            return (
+                <span>
+                    <Button
+                        size="small"
+                        onClick={() => {
+                            this.viewHandler();
+                        }}>
+                        详情
+                    </Button>
+                </span>
+            );
+        }
+    }
     render() {
         const { isLoading, list, pagination } = this.props;
+        
         return (
             <Spin spinning={isLoading} tip="加载中...">
                 <Table
-                    size = 'middle'
                     dataSource={list}
                     pagination={{
                         ...pagination,
@@ -52,17 +66,16 @@ class List extends React.Component {
                             return formatViewData('name', text);
                         }}
                     />
-
                     <Column
-                        title="头像"
-                        dataIndex="avatar"
-                        key="avatar"
+                        title="房间号"
+                        dataIndex="roomOrder"
+                        key="roomOrder"
                         render={text => {
-                            return (
-                                <div className={styles.avatar_div}>
-                                    <img src={formatViewData('avatar', text)} className={styles.user_avatar} />
-                                </div>
-                            );
+                            if (text === null) {
+                                return (<span style={{ color: 'red' }}>暂无</span>)
+                            } else {
+                                return formatViewData('roomOrder', text);
+                            }
                         }}
                     />
 
@@ -82,19 +95,6 @@ class List extends React.Component {
                         sorter={true}
                         render={text => {
                             return formatViewData('age', text);
-                        }}
-                    />
-
-                    <Column
-                        title="房间号"
-                        dataIndex="roomId"
-                        key="roomId"
-                        render={text => {
-                            if (text === null) {
-                                return (<span style={{color: 'red'}}>暂无</span>)
-                            } else {
-                                return formatViewData('roomId', text);
-                            }   
                         }}
                     />
 

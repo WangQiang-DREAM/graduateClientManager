@@ -12,8 +12,6 @@ class Container extends React.Component {
                 <Edit />
                 <View />
                 <Search />
-                <div style={{textAlign: 'right', paddingBottom: 20}}>
-                </div>
                 <div
                     style={{
                         background: '#f0f2f5',

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, Row, Col, Spin, Form, Button } from 'antd';
+import { Modal, Row, Col, Spin, Form, Button, Select, Upload, Icon} from 'antd';
 
 import { InputNumber, Input, DatePicker } from 'antd';
 
@@ -24,54 +24,67 @@ class ADD extends React.Component {
             }
         });
     };
-    render() {
+    render() { 
         const { isModalShow, isLoading, modalShow } = this.props;
         const { getFieldDecorator } = this.props.form;
         const form = (
             <Form>
                 <Row>
                     <Col span={24}>
-                        <FormItem {...formItemLayout} label="序号">
-                            {getFieldDecorator('orderNumber', {
+                        <FormItem {...formItemLayout} label="房间编号">
+                            {getFieldDecorator('roomOrder', {
                                 rules: [
                                     {
                                         required: true,
-                                        message: '请填写序号',
+                                        message: '请填写编号',
                                     },
 
                                     {
                                         type: 'integer',
-                                        message: '序号为整数',
+                                        message: '编号为整数',
                                     },
                                 ],
                             })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
                         </FormItem>
                     </Col>
-
                     <Col span={24}>
-                        <FormItem {...formItemLayout} label="ID">
-                            {getFieldDecorator('id', {
+                        <FormItem {...formItemLayout} label="窗户防位">
+                            {getFieldDecorator('direction', {
+                                rules: [],
+                            })(
+                                <Select style={{ width: 200 }}>
+                                    <Option value={'南'}>朝南</Option>
+                                    <Option value={'北'}>朝北</Option>
+                                    <Option value={'东'}>朝东</Option>
+                                    <Option value={'西'}>朝西</Option>
+                                </Select>
+
+                            )}
+                        </FormItem>
+                    </Col>
+
+                   
+                    <Col span={24}>
+                        <FormItem {...formItemLayout} label="房间状态">
+                            {getFieldDecorator('status', {
                                 rules: [
                                     {
-                                        type: 'integer',
-                                        message: 'ID为整数',
+                                        required: true,
+                                        message: '请填写访问统计权限',
                                     },
                                 ],
-                            })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
+                            })(
+                                <Select style={{ width: 200 }}>
+                                    <Option value="0">在线</Option>
+                                    <Option value="1">已下线</Option>
+                                </Select>
+                            )}
                         </FormItem>
                     </Col>
 
                     <Col span={24}>
-                        <FormItem {...formItemLayout} label="昵称">
-                            {getFieldDecorator('nickName', {
-                                rules: [],
-                            })(<Input placeholder="请填写" />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="关注数">
-                            {getFieldDecorator('followNum', {
+                        <FormItem {...formItemLayout} label="可入住人数">
+                            {getFieldDecorator('totalNum', {
                                 rules: [
                                     {
                                         type: 'integer',
@@ -83,67 +96,17 @@ class ADD extends React.Component {
                     </Col>
 
                     <Col span={24}>
-                        <FormItem {...formItemLayout} label="粉丝数">
-                            {getFieldDecorator('fansNum', {
-                                rules: [
-                                    {
-                                        type: 'integer',
-                                        message: '粉丝数为整数',
-                                    },
-                                ],
-                            })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
-                        </FormItem>
+                       
                     </Col>
 
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="获赞数">
-                            {getFieldDecorator('likeNum', {
-                                rules: [
-                                    {
-                                        type: 'integer',
-                                        message: '获赞数为整数',
-                                    },
-                                ],
-                            })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="作品数">
-                            {getFieldDecorator('producedVideoNum', {
-                                rules: [
-                                    {
-                                        type: 'integer',
-                                        message: '作品数为整数',
-                                    },
-                                ],
-                            })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="注册时间">
-                            {getFieldDecorator('registerTime', {
-                                rules: [],
-                            })(<DatePicker style={{ width: '100%' }} placeholder="请选择" />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="操作">
-                            {getFieldDecorator('operation', {
-                                rules: [],
-                            })(<Input placeholder="请填写" />)}
-                        </FormItem>
-                    </Col>
                 </Row>
             </Form>
         );
         return (
             <span>
-                <Button onClick={modalShow}>添加一条</Button>
+                <Button onClick={modalShow}>添加房间信息</Button>
                 <Modal
-                    title="添加单条数据"
+                    title="添加房间信息"
                     visible={isModalShow}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
@@ -161,6 +124,7 @@ class ADD extends React.Component {
 const mapStateToProps = state => ({
     isModalShow: state.roommanage.uiStatus.isAddShow,
     isLoading: state.roommanage.uiStatus.isLoading,
+    roomDetail: state.roommanage.currentRoomDetail,
 });
 
 const mapDispatchToProps = dispatch => ({

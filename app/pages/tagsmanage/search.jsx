@@ -1,10 +1,8 @@
 import React from 'react';
 import styles from './search.css';
 import { connect } from 'react-redux';
-import { Row, Col, Button, Form } from 'antd';
-
-import { InputNumber, Input, DatePicker } from 'antd';
-
+import { Row, Col, Button, Form, Select, InputNumber, Input, DatePicker } from 'antd';
+const RangePicker = DatePicker.RangePicker;
 import moment from 'moment';
 
 import { actions, asyncGet } from './models';
@@ -29,13 +27,49 @@ class Search extends React.Component {
             <Form onSubmit={this.handleSearch}>
                 <Row className={styles.c_searchBox}>
                     <Col span={6}>
-                        <FormItem {...formItemLayout} label="标签名称">
-                            {getFieldDecorator('title', {})(
+                        <FormItem {...formItemLayout} label="姓名">
+                            {getFieldDecorator('name', {})(
                                 <Input placeholder="请填写" style={{ width: '100%' }} />,
                             )}
                         </FormItem>
                     </Col>
-                    <Col span={14} className={styles.m_tools}>
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="用户ID">
+                            {getFieldDecorator('uid', {})(
+                                <Input placeholder="请填写" style={{ width: '100%' }} />,
+                            )}
+                        </FormItem>
+                    </Col>
+                    <Col span={12}>
+                        <FormItem {...formItemLayout} label="入住时间">
+                            {getFieldDecorator('checkInTime', {})(
+                                <RangePicker
+                                    ranges={{ 今天: [moment(), moment()], '本月': [moment(), moment().endOf('month')] }}
+                                    showTime
+                                    format="YYYY/MM/DD"
+                                />
+                            )}
+                        </FormItem>
+                    </Col>
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="房间号">
+                            {getFieldDecorator('roomOrder', {})(
+                                <Input placeholder="请填写" style={{ width: '100%' }} />,
+                            )}
+                        </FormItem>
+                    </Col>
+                    <Col span={6}>
+                        <FormItem {...formItemLayout} label="用户类型">
+                            {getFieldDecorator('userType', {})(
+                                <Select style={{ width: '100%' }} placeholder="请选择">
+                                    <Option value={'1'}>未入住</Option>
+                                    <Option value={'2'}>已入住</Option>
+                                </Select>
+                            )}
+                        </FormItem>
+                    </Col>
+                    
+                    <Col span={12} className={styles.m_tools}>
                         <Button onClick={this.resetForm}>重置</Button>
                         <Button type="primary" htmlType="submit">
                             搜索

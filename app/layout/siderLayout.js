@@ -40,7 +40,9 @@ class Comp extends React.Component {
                     collapsed={this.state.collapsed}
                     width={256}
                     className={styles.siderbar}>
-                    <div className={styles.logo}></div>
+                    <div className={styles.logo}>
+                        托老所
+                    </div>
                     <Nav mode="inline" theme="dark" openKey={true}/>
                     <Col className={styles.triggericon}>
                         <Icon

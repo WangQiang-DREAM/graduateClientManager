@@ -1,17 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Spin, Popconfirm ,Button} from 'antd';
+import { Table, Spin, Popconfirm, Button} from 'antd';
 const { Column } = Table;
-import { actions, asyncGet, asyncUpdate } from './models';
+import { actions, asyncGet, asyncUpdate, asyncGetRoomDetail, asyncGetRoomImgDetail} from './models';
 import { formatViewData } from './utils';
 import styles from './list.css';
 class List extends React.Component {
     componentDidMount() {
         this.props.asyncGet();
     }
-    viewHandler = image => {
+    viewHandler = roomOrder => {
+        this.props.getRoomUser(roomOrder);
+        this.props.getRoomImg(roomOrder);
         this.props.viewShow();
-        this.props.CurrentRoomDetail(image);
     };
     editHandler = id => {
         this.props.editShow();
@@ -24,17 +25,17 @@ class List extends React.Component {
     };
     offLine = roomOrder => {
         let content = {
-            status:'1',
-            roomOrder:roomOrder
+            status: '1',
+            roomOrder: roomOrder,
         };
         this.props.updateStatus(content)
     }
     onLine = roomOrder => {
         let content = {
             status: '0',
-            roomOrder: roomOrder
+            roomOrder: roomOrder,
         };
-        this.props.updateStatus(content)
+        this.props.updateStatus(content);
     }
     renderAction = (text, record) => {
         if ( record.status == '0') {
@@ -43,7 +44,7 @@ class List extends React.Component {
                     <Button
                         size="small"
                         onClick={() => {
-                            this.viewHandler(record.image);
+                            this.viewHandler(record.roomOrder);
                         }}>
                         详情
                     </Button>
@@ -65,7 +66,7 @@ class List extends React.Component {
                     <Button
                         size="small"
                         onClick={() => {
-                            this.viewHandler(record.image);
+                            this.viewHandler(record.roomOrder);
                         }}>
                         详情
                     </Button>
@@ -183,7 +184,7 @@ class List extends React.Component {
                         dataIndex="status"
                         key="status"
                         render={text => {
-                            if (text =='0') {
+                            if (text == '0') {
                                 return (
                                     <span style={{ color: '#00AA00' }}>
                                         {formatViewData('status', text)}
@@ -218,10 +219,11 @@ const mapDispatchToProps = dispatch => ({
     viewShow: () => dispatch(actions.changeUiStatus({ isViewShow: true })),
     addShow: () => dispatch(actions.changeUiStatus({ isAddShow: true })),
     editShow: () => dispatch(actions.changeUiStatus({ isUpdateShow: true })),
-    CurrentRoomDetail: image => dispatch(actions.getcurrentRoomDetail(image)),
     changePagination: pagination => dispatch(actions.changePagination(pagination)),
     changeSort: data => dispatch(actions.changeSort(data)),
-    updateStatus: content => dispatch(asyncUpdate(content))
+    updateStatus: content => dispatch(asyncUpdate(content)),
+    getRoomUser: roomOrder => dispatch(asyncGetRoomDetail(roomOrder)),
+    getRoomImg: roomOrder => dispatch(asyncGetRoomImgDetail(roomOrder)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

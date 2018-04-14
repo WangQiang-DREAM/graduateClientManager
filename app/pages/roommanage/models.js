@@ -1,16 +1,37 @@
-import { createReducers, createActions, request, sleep } from '../../utils/';
-import { combineReducers } from 'redux';
-import { APIHOST } from '../../config';
-
+import {
+    createReducers,
+    createActions,
+    request,
+    sleep
+} from '../../utils/';
+import {
+    combineReducers
+} from 'redux';
+import {
+    APIHOST
+} from '../../config';
+import {
+    notification,
+    message
+} from 'antd';
 const urls = {
     get: APIHOST + 'room/queryRoomInfo',
-    del: APIHOST + '',
+    getRoomDetail: APIHOST + 'user/queryAllUsers',
+    getRoomImgDetailL: APIHOST + 'room/queryRoomImgByRoomOrder',
+    delRoomPhoto: APIHOST + 'room/deleteRoomPhoto',
     update: APIHOST + 'room/updateStatus',
-    add: APIHOST + '',
+    add: APIHOST + 'room/addRoomInfo',
 };
 
 const path = name => `app/pages/roommanage/${name}`;
-
+const successError = (type, msg) => {
+    notification[type]({
+        message: msg
+    });
+};
+const success = function () {
+    message.success('操作成功！');
+};
 const models = {
     list: {
         data: [],
@@ -37,7 +58,9 @@ const models = {
         },
         handlers: {
             changePagination(state, action) {
-                return { ...state, ...action.payload };
+                return { ...state,
+                    ...action.payload
+                };
             },
         },
     },
@@ -64,10 +87,13 @@ const models = {
             isAddShow: false,
             isAddPlusShow: false,
             isUpdateShow: false,
+            isDetailShow: false,
         },
         handlers: {
             changeUiStatus(state, action) {
-                return { ...state, ...action.payload };
+                return { ...state,
+                    ...action.payload
+                };
             },
         },
     },
@@ -79,14 +105,24 @@ const models = {
             },
         },
     },
-    currentRoomDetail: {
-        data: {},
+    roomDetail: {
+        data: [],
         handlers: {
-            getcurrentRoomDetail(state, action) {
+            getRoomDetail(state, action) {
                 return action.payload;
             }
         }
-    }
+    },
+    roomImgDetail: {
+        data: {
+            image: [],
+        },
+        handlers: {
+            getRoomImgDetail(state, action) {
+                return action.payload;
+            }
+        }
+    },
 };
 
 export const actions = createActions(models, path);
@@ -113,7 +149,9 @@ const formatGetParams = getState => {
 export const asyncGet = () => {
     return async (dispatch, getState) => {
         try {
-            dispatch(actions.changeUiStatus({ isLoading: true }));
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
             // 下面的请求和结果返回需要根据接口来实现
             let result = await request(urls.get + formatGetParams(getState));
             dispatch(actions.get(result.docs));
@@ -121,17 +159,20 @@ export const asyncGet = () => {
         } catch (e) {
             throw e;
         } finally {
-            dispatch(actions.changeUiStatus({ isLoading: false }));
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
         }
     };
 };
 
 // 修改房间状态
 export const asyncUpdate = content => {
-    console.log(content)
     return async dispatch => {
         try {
-            dispatch(actions.changeUiStatus({ isLoading: true }));
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
             // 下面的请求和结果返回需要根据接口来实现
             let result = await request(
                 urls.update +
@@ -143,30 +184,132 @@ export const asyncUpdate = content => {
                     }),
                 ),
             );
-            console.log(result)
-            dispatch(actions.update(result.dbResult.changeNewRoom[0]));
+            if (result.ok == 1) {
+                dispatch(actions.update(result.dbResult.changeNewRoom[0]));
+                successError('success', '操作成功！');
+            } else {
+                successError('error', '操作失败，请重试！');
+            }
         } catch (e) {
             throw e;
         } finally {
-            dispatch(actions.changeUiStatus({ isLoading: false }));
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
+        }
+    };
+};
+
+// 查询房间住户
+export const asyncGetRoomDetail = roomOrder => {
+    return async (dispatch, getState) => {
+        try {
+            // 下面的请求和结果返回需要根据接口来实现
+            let result = await request(urls.getRoomDetail + '?body=' + encodeURIComponent(JSON.stringify({
+                querys: {
+                    roomOrder: roomOrder
+                },
+                sort: {
+                    key: 'roomOrder',
+                    order: 'ascend'
+                },
+                pagination: {
+                    current: 1,
+                    pageSize: 20
+                }
+            })));
+            if (result.docs.length > 0) {
+                dispatch(actions.getRoomDetail(result.docs));
+            } else {
+                dispatch(actions.getRoomDetail([]));
+            }
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
+        } catch (e) {
+            throw e;
+        } finally {
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
+        }
+    };
+};
+
+// 查询房间图片
+export const asyncGetRoomImgDetail = roomOrder => {
+    return async (dispatch, getState) => {
+        try {
+            // 下面的请求和结果返回需要根据接口来实现
+            let result = await request(urls.getRoomImgDetailL + '?body=' + encodeURIComponent(JSON.stringify({
+                roomOrder: roomOrder,
+            })));
+            if (result.docs.image != null) {
+                dispatch(actions.getRoomImgDetail(result.docs));
+            } else {
+                let data = {
+                    image: [],
+                    roomOrder: result.docs.roomOrder,
+                    roomId: result.docs.roomId,
+                }
+                dispatch(actions.getRoomImgDetail(data));
+            }
+            
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
+        } catch (e) {
+            throw e;
+        } finally {
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
+        }
+    };
+};
+
+// 更改房间图片
+export const asyncGetRoomImg = roomOrder => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
+            // 下面的请求和结果返回需要根据接口来实现
+            await sleep(300)
+            let result = await request(urls.getRoomImgDetailL + '?body=' + encodeURIComponent(JSON.stringify({
+                roomOrder: roomOrder,
+            })));
+            dispatch(actions.getRoomImgDetail(result.docs));
+            success();
+        } catch (e) {
+            throw e;
+        } finally {
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
         }
     };
 };
 
 
-
-
 export const asyncDel = id => {
     return async dispatch => {
         try {
-            dispatch(actions.changeUiStatus({ isLoading: true }));
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
             // 下面的请求和结果返回需要根据接口来实现
-            let result = await request(urls.del + '?body=' + encodeURIComponent(JSON.stringify({ id: id })));
+            let result = await request(urls.del + '?body=' + encodeURIComponent(JSON.stringify({
+                id: id
+            })));
             dispatch(actions.del(result.id));
         } catch (e) {
             throw e;
         } finally {
-            dispatch(actions.changeUiStatus({ isLoading: false }));
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
         }
     };
 };
@@ -174,17 +317,63 @@ export const asyncDel = id => {
 
 
 export const asyncAdd = contents => {
-    return async dispatch => {
+    console.log(contents)
+    return async( dispatch, getState)=> {
         try {
-            dispatch(actions.changeUiStatus({ isLoading: true }));
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
             // 下面的请求和结果返回需要根据接口来实现
-            let newContents = await request(urls.add, 'POST', contents);
-            await sleep(1000);
-            dispatch(actions.add(newContents));
+            let result = await request(urls.add + '?body=' + encodeURIComponent(JSON.stringify({
+                roomOrder: contents[0].roomOrder,
+                direction: contents[0].direction,
+                status: contents[0].status,
+                totalNum: contents[0].totalNum,
+                image: [contents[0].image],
+                creator: getState().user.info.name,
+            })));
+            console.log(result)
+            // await sleep(1000);
+            // dispatch(actions.add(newContents));
         } catch (e) {
             throw e;
         } finally {
-            dispatch(actions.changeUiStatus({ isLoading: false }));
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
+        }
+    };
+};
+
+
+// 删除房间图片
+export const asyncDelRoomPhoto = (newurl, roomOrder) => {
+    return async dispatch => {
+        try {
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
+            // 下面的请求和结果返回需要根据接口来实现
+            let newurlStr = ''
+            if (newurl.length > 0 ) {
+                newurlStr = newurl.join();
+            } else {
+                newurlStr = null;
+            }
+             
+            let result = await request(urls.delRoomPhoto + '?body=' + encodeURIComponent(JSON.stringify({
+                image: newurlStr,
+                roomOrder: roomOrder,
+            })));
+            if (result.status == '删除成功') {
+                success();
+            }
+        } catch (e) {
+            throw e;
+        } finally {
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
         }
     };
 };

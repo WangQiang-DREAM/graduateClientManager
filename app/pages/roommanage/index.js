@@ -15,7 +15,7 @@ class Container extends React.Component {
                 <View />
                 <div style={{ textAlign: 'right', padding: 10 }}>
                     <Search />
-                    <Add /> <AddPlus />
+                    <Add />
                 </div>
                 <div
                     style={{
