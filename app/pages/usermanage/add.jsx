@@ -43,6 +43,18 @@ class ADD extends React.Component {
                     </Col>
 
                     <Col span={24}>
+                        <FormItem {...formItemLayout} label="姓名">
+                            {getFieldDecorator('name', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: '请填写姓名',
+                                    },
+                                ],
+                            })(<Input style={{ width: 200 }} placeholder="请填写" />)}
+                        </FormItem>
+                    </Col>
+                    <Col span={24}>
                         <FormItem {...formItemLayout} label="访问统计权限">
                             {getFieldDecorator('roles', {
                                 rules: [

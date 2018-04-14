@@ -167,7 +167,7 @@ export const asyncAdd = contents => {
             dispatch(actions.changeUiStatus({ isLoading: true }));
             // 下面的请求和结果返回需要根据接口来实现
             let newContents = await request(
-                urls.add + '?body={"username":"' + contents[0].username + '","roles":"' + contents[0].roles + '"}',
+                urls.add + '?body={"name":"' + contents[0].name + '","username":"' + contents[0].username + '","roles":"' + contents[0].roles + '"}',
             );
             if (newContents.code === 0) {
                 addNotification('success', '添加管理员成功');

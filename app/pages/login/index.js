@@ -23,36 +23,41 @@ class Comp extends React.Component {
         const { getFieldDecorator } = this.props.form;
         const { isLoading } = this.props;
         return (
-              <div className={styles.main}>
-            <Spin spinning={isLoading} tip="登录中...">
-                    <div className={styles.box} style={{ margin: '100px auto', width: '300px', 'textAlign': 'center' }}>
-                        <div style={{ 'marginBottom': '20px' }}>请输入用户名和密码</div>
-                        <Form onSubmit={this.handleSubmit} className="login-form">
-                            <FormItem>
-                                {getFieldDecorator('userName', {
-                                    rules: [{ required: true, message: '请输入域账户用户名!' }],
-                                })(<Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="用户名" />)}
-                            </FormItem>
-                            <FormItem>
-                                {getFieldDecorator('password', {
-                                    rules: [{ required: true, message: '请输入密码!' }],
-                                })(
-                                    <Input
-                                        prefix={<Icon type="lock" style={{ fontSize: 13 }} />}
-                                        type="password"
-                                        placeholder="密码"
-                                    />,
-                                )}
-                            </FormItem>
-                            <FormItem>
-                                <Button type="primary" htmlType="submit" className="login-form-button">
-                                    登录
-                                </Button>
-                            </FormItem>
-                        </Form>
+            <div className={styles.main}>
+                <Spin spinning={isLoading} tip="登录中...">
+                    <div className={styles.box}>
+                        <div className={styles.mainbox}>
+                            <div className={styles.title}>
+                            托老所管理系统
+                                <p style={{fontSize:'13px'}}>BEADHOUSE MANAGE SYSTYM</p>
+                            </div>
+                            <Form onSubmit={this.handleSubmit} className="login-form">
+                                <FormItem>
+                                    {getFieldDecorator('userName', {
+                                        rules: [{ required: true, message: '请输入用户名!' }],
+                                    })(<Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="用户名" />)}
+                                </FormItem>
+                                <FormItem>
+                                    {getFieldDecorator('password', {
+                                        rules: [{ required: true, message: '请输入密码!' }],
+                                    })(
+                                        <Input
+                                            prefix={<Icon type="lock" style={{ fontSize: 13 }} />}
+                                            type="password"
+                                            placeholder="密码"
+                                        />,
+                                    )}
+                                </FormItem>
+                                <FormItem>
+                                    <Button style={{width: '100%'}} type="primary" htmlType="submit" className="login-form-button">
+                                        登录
+                                    </Button>
+                                </FormItem>
+                            </Form>
+                        </div>
                     </div>
                 
-            </Spin>
+                </Spin>
             </div>
         );
     }
