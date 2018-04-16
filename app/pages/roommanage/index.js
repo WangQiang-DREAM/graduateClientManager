@@ -5,7 +5,6 @@ import Search from './search.jsx';
 import View from './view.jsx';
 import Edit from './edit.jsx';
 import Add from './add.jsx';
-import AddPlus from './addPlus.jsx';
 
 class Container extends React.Component {
     render() {
@@ -13,7 +12,7 @@ class Container extends React.Component {
             <div>
                 <Edit />
                 <View />
-                <div style={{ textAlign: 'right', padding: 10 }}>
+                <div style={{ textAlign: 'right',paddingTop:5 }}>
                     <Search />
                     <Add />
                 </div>

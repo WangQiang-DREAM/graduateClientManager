@@ -55,7 +55,16 @@ class List extends React.Component {
                             return formatViewData('username', text);
                         }}
                     />
-
+                    <Column
+                        width={'25%'}
+                        title="管理员名称"
+                        dataIndex="name"
+                        key="name"
+                        sorter={false}
+                        render={text => {
+                            return formatViewData('name', text);
+                        }}
+                    />
                     <Column
                         width={'25%'}
                         title="访问统计权限"

@@ -1,24 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, Row, Col, Table, Card, Spin, Upload, Icon, message, Button} from 'antd';
+import { Modal, Row, Col, Table, Card, Spin, Upload, Icon, Avatar, Button, List, Rate} from 'antd';
 import { actions, asyncGetRoomImg, asyncDelRoomPhoto} from './models';
 import { formatViewData } from './utils';
 const { Column } = Table;
 import styles from './view.css';
+import moment from 'moment';
 
-const imgl = [{
-    uid: -1,
-    name: 'xxx.png',
-    status: 'done',
-    url: 'https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png',
-    thumbUrl: 'https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png',
-}, {
-    uid: -2,
-    name: 'yyy.png',
-    status: 'done',
-    url: 'https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png',
-    thumbUrl: 'https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png',
-}]
 class View extends React.Component {
     handleCan = () => {
         this.props.viewHide();
@@ -49,12 +37,44 @@ class View extends React.Component {
         }
         return arr; 
     }
+  
     removeImg = file => {
         let oldimgurl = this.props.roomDetail.image;
         let newurl = this.removeByValue(oldimgurl, file.url);
-        console.log(newurl.length)
         let roomOrder = this.props.roomDetail.roomOrder;
         this.props.asyncDelRoomPhoto(newurl, roomOrder);
+    }
+    renderActivities = () => {
+        const list = this.props.roomComments;
+        return list.map(item => {
+            return (
+                <List.Item key={item.commentId}>
+                    <List.Item.Meta
+                        avatar={<Avatar src={'http://localhost:8080/manager/avatar2.jpeg'} />}
+                        title={
+                            <div>
+                                <span>
+                                    <a className={styles.username}>{item.user.name}</a>
+                                </span>
+                                <span style={{marginLeft: 15}}>
+                                    <Rate disabled defaultValue={4} style={{fontSize: 12}}/>
+                                </span>
+                                <span className={styles.datetime} title={item.createTime}>
+                                    {formatViewData('createTime', item.createTime)}
+                                </span>
+                            </div>
+                        }
+                        description={
+                            <div>
+                                <span className={styles.comments}>
+                                    {item.content}
+                                </span> 
+                            </div>
+                        }
+                    />
+                </List.Item>
+            );
+        });
     }
     render() {
         const { isViewShow, isLoading, list, roomDetail} = this.props;
@@ -84,11 +104,13 @@ class View extends React.Component {
             onChange: this.handleUpload,
             onRemove: this.removeImg,
         };
+        let photonum = roomDetail.image.length;
+        let coommentnum = this.props.roomComments.length;
         return (
-            <Modal title="查看详情" width={660} visible={isViewShow} onCancel={this.handleCan} footer={null}>
-                <Spin spinning={isLoading} tip="请稍后...">
-                    <Card style={{ width: '100%', marginBottom: 20 }} bodyStyle={{ padding: 10 }}>
-                        <div style={{ padding: '0 0 5px', borderBottom: '1px solid #dcdcdc', marginBottom: '10px', color: '#000' }}> 房间图片</div>
+            <Modal className={styles.modal} title="查看房间详情" width={'69%'} visible={isViewShow} onCancel={this.handleCan} footer={null}>
+                <Spin spinning={isLoading} tip="请稍等...">
+                    <Card style={{ width: '100%', marginBottom: 15 }} bodyStyle={{ padding: 10 }} bordered={false}>
+                        <div style={{ padding: '0 0 5px 10px', borderBottom: '1px solid #dcdcdc', marginBottom: '10px', color: '#000' }}> 房间图片({photonum})</div>
                         <div style={{ display: 'block' }} className={styles.imgbox}>
                             <div className={styles.upload}>
                                 <Upload {...props}>
@@ -98,7 +120,10 @@ class View extends React.Component {
                             </div>
                         </div>
                     </Card>
-                    <Table size="middle" dataSource={list} pagination={false}>
+                    <Table size="middle" dataSource={list} pagination={false} style={{
+                        marginBottom: 15,
+                        background: '#fff'
+                    }}>
                         <Column
                             title="床位号"
                             dataIndex="bedId"
@@ -132,6 +157,18 @@ class View extends React.Component {
                             }}
                         />
                     </Table> 
+                    <Card
+                        bordered={false}
+                        bodyStyle={{
+                            padding: 10
+                        }}>
+                        <div style={{ padding: '0 0 5px 10px', borderBottom: '1px solid #dcdcdc', marginBottom: '10px', color: '#000' }}> 评价({coommentnum})</div>
+                        <List size="small">
+                            <div className={styles.activitiesList}>
+                                {this.renderActivities()}
+                            </div>
+                        </List>
+                    </Card>
                 </Spin>    
             </Modal>
         );
@@ -144,6 +181,7 @@ const mapStateToProps = state => ({
     roomDetail: state.roommanage.roomImgDetail,
     list: state.roommanage.roomDetail,
     isLoading: state.roommanage.uiStatus.isLoading,
+    roomComments: state.roommanage.roomComments,
 });
 
 const mapDispatchToProps = dispatch => ({

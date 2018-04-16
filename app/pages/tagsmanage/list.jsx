@@ -99,12 +99,17 @@ class List extends React.Component {
                     />
 
                     <Column
-                        title="注册时间"
-                        dataIndex="registerTime"
-                        key="registerTime"
+                        title="入住时间"
+                        dataIndex="checkInTime"
+                        key="checkInTime"
                         sorter={true}
                         render={text => {
-                            return formatViewData('registerTime', text);
+                            if (text != null) {
+                                return formatViewData('checkInTime', text);
+                            } else {
+                                return (<span style={{ color: 'red' }}>暂无</span>)
+                            }
+                           
                         }}
                     />
 

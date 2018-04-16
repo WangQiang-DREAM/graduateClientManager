@@ -21,6 +21,7 @@ const urls = {
     delRoomPhoto: APIHOST + 'room/deleteRoomPhoto',
     update: APIHOST + 'room/updateStatus',
     add: APIHOST + 'room/addRoomInfo',
+    getRoomComments: APIHOST + 'user/queryComments',
 };
 
 const path = name => `app/pages/roommanage/${name}`;
@@ -40,7 +41,7 @@ const models = {
                 return action.payload;
             },
             add(state, action) {
-                return [...action.payload, ...state];
+                return [action.payload, ...state];
             },
             del(state, action) {
                 return state.filter(item => item.id !== action.payload);
@@ -119,6 +120,14 @@ const models = {
         },
         handlers: {
             getRoomImgDetail(state, action) {
+                return action.payload;
+            }
+        }
+    },
+    roomComments: {
+        data: [],
+        handlers: {
+            getRoomComments(state, action) {
                 return action.payload;
             }
         }
@@ -251,6 +260,7 @@ export const asyncGetRoomImgDetail = roomOrder => {
                     image: [],
                     roomOrder: result.docs.roomOrder,
                     roomId: result.docs.roomId,
+                    commentNum: result.docs.commentNum,
                 }
                 dispatch(actions.getRoomImgDetail(data));
             }
@@ -315,7 +325,7 @@ export const asyncDel = id => {
 };
 
 
-
+// 添加房间信息
 export const asyncAdd = contents => {
     console.log(contents)
     return async( dispatch, getState)=> {
@@ -329,12 +339,14 @@ export const asyncAdd = contents => {
                 direction: contents[0].direction,
                 status: contents[0].status,
                 totalNum: contents[0].totalNum,
-                image: [contents[0].image],
                 creator: getState().user.info.name,
             })));
-            console.log(result)
-            // await sleep(1000);
-            // dispatch(actions.add(newContents));
+            if ( result.code == 0) {
+                dispatch(actions.add(result.addNew));
+                successError('success', '添加成功！');
+            } else {
+                successError('error', result.msg);
+            }      
         } catch (e) {
             throw e;
         } finally {
@@ -374,6 +386,38 @@ export const asyncDelRoomPhoto = (newurl, roomOrder) => {
             dispatch(actions.changeUiStatus({
                 isLoading: false
             }));
+        }
+    };
+};
+
+// 查询房间评论
+export const asyncGetRoomComments = roomOrder => {
+    return async dispatch => {
+        try {
+            dispatch(actions.getRoomComments([]));
+            dispatch(actions.changeUiStatus({ isLoading: true }));
+            let result = await request(
+                urls.getRoomComments +
+                '?body=' +
+                encodeURIComponent(
+                    JSON.stringify({
+                        querys: { 'roomOrder': roomOrder },
+                        sort: {},
+                        pagination: { 'current': 1, 'pageSize': 10 },
+                    }),
+                ),
+            );
+            console.log(result);
+            if (result.docs) {
+                dispatch(actions.getRoomComments(result.docs));
+            } else {
+                dispatch(actions.getRoomComments([]));
+            }
+           
+        } catch (e) {
+            throw e;
+        } finally {
+            dispatch(actions.changeUiStatus({ isLoading: false }));
         }
     };
 };

@@ -13,5 +13,201 @@
     color: #666;
 }
 
+.mainBox {
+    width: 100%;
+    height: 100%;
+}
 
+.mainCon {
+    display: block;
+    margin: 0 auto;
+}
 
+.custom_image img {
+    display: block;
+}
+
+.custom_card {
+    padding: 10px 16px;
+}
+
+.custom_card p {
+    color: #999;
+}
+
+.personInfo {
+    width: 100%;
+    height: 130px;
+    padding: 5px 25px;
+}
+
+.big_avatar {
+    width: 75px;
+    height: 75px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 50%;
+    margin-top: 25px;
+}
+
+.perCol {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.perCol p {
+    margin-bottom: 8px;
+}
+
+.info {
+    font-size: 20px;
+    color: #000;
+}
+
+.ant-card-meta-description {
+    color: #999;
+    height: 44px;
+    line-height: 22px;
+    overflow: hidden;
+}
+
+.cardTitle {
+    font-size: 0;
+}
+
+.cardTitle a {
+    color: #999;
+    margin-left: 12px;
+    line-height: 24px;
+    height: 24px;
+    display: inline-block;
+    vertical-align: top;
+    font-size: 15px;
+}
+
+.cardTitle a:hover {
+    color: #999;
+}
+
+.projectItemContent {
+    display: flex;
+    margin-top: 8px;
+    overflow: hidden;
+    font-size: 12px;
+    height: 20px;
+    line-height: 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.datetime {
+    color: rgba(0, 0, 0, 0.25);
+    flex: 0 0 auto;
+    font-size: 12px;
+    float: right;
+}
+
+.projectGrid {
+    width: 50%;
+}
+
+.projectItemContent a {
+    color: #999;
+    display: inline-block;
+    flex: 1 1 0;
+}
+
+.projectItemContent a:hover {
+    color: #999;
+}
+
+.perCont {
+    float: right;
+    display: table;
+    height: 100%;
+}
+
+.perColRight {
+    white-space: nowrap;
+    display: table-cell;
+    vertical-align: middle;
+    padding-right: 20px;
+}
+
+.statItem {
+    padding: 0 32px;
+    position: relative;
+    display: inline-block;
+}
+
+.statItem>p:first-child {
+    color: #999;
+    font-size: 14px;
+    line-height: 22px;
+    margin-bottom: 4px;
+}
+
+.statItem>p {
+    color: #999;
+    font-size: 30px;
+    line-height: 38px;
+    margin: 0;
+}
+
+.statItem>p>span {
+    color: #999;
+    font-size: 20px;
+}
+
+.statItem:after {
+    background-color: #999;
+    position: absolute;
+    top: 8px;
+    right: 0;
+    width: 1px;
+    height: 40px;
+    content: '';
+}
+
+.statItem:last-child {
+    padding-right: 0;
+}
+
+.statItem:last-child:after {
+    display: none;
+}
+
+.activitiesList {
+    padding: 0 24px 8px 24px;
+}
+
+.username {
+    color: #666;
+    font-size: 13px;
+    font-family: PingFangSC-Light, 'helvetica neue', arial, 'hiragino sans gb', 'microsoft yahei ui', 'microsoft yahei', simsun, sans-serif;
+}
+
+.event {
+    font-weight: normal;
+    font-size: 13px;
+    font-family: PingFangSC-Light, 'helvetica neue', arial, 'hiragino sans gb', 'microsoft yahei ui', 'microsoft yahei', simsun, sans-serif;
+}
+
+.mapChart {
+    padding-top: 24px;
+    height: 457px;
+    text-align: center;
+}
+
+.mapChart img {
+    display: inline-block;
+    max-width: 100%;
+    max-height: 437px;
+}
+.comments{
+    color: #333;
+    font-size: 13px;
+}
+.modal>div>div {
+    background: #f5f5f5;
+}

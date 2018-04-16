@@ -6,14 +6,14 @@ export const enums = {
         { label: '女', value: 1 },
     ],
     userType: [
-        { label: '未入住', value: '1' },
+        { label: '仅注册', value: '1' },
         { label: '已入住', value: '2' },
     ]
 };
 
 export const dataTypes = {
    
-    registerTime: 'DatePicker',
+    checkInTime: 'DatePicker',
 
 };
 

@@ -40,7 +40,7 @@ class Search extends React.Component {
                             )}
                         </FormItem>
                     </Col>
-                    <Col span={12}>
+                    <Col span={10}>
                         <FormItem {...formItemLayout} label="入住时间">
                             {getFieldDecorator('checkInTime', {})(
                                 <RangePicker

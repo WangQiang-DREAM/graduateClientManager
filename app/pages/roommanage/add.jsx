@@ -30,7 +30,7 @@ class ADD extends React.Component {
         const form = (
             <Form>
                 <Row>
-                    <Col span={24}>
+                    <Col span={20}>
                         <FormItem {...formItemLayout} label="房间编号">
                             {getFieldDecorator('roomOrder', {
                                 rules: [
@@ -47,12 +47,15 @@ class ADD extends React.Component {
                             })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
                         </FormItem>
                     </Col>
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="窗户防位">
+                    <Col span={20}>
+                        <FormItem {...formItemLayout} label="窗户方位">
                             {getFieldDecorator('direction', {
-                                rules: [],
+                                rules: [{
+                                    required: true,
+                                    message: '请填写窗户方位',
+                                }],
                             })(
-                                <Select style={{ width: 200 }}>
+                                <Select placeholder= "请选择">
                                     <Option value={'南'}>朝南</Option>
                                     <Option value={'北'}>朝北</Option>
                                     <Option value={'东'}>朝东</Option>
@@ -64,7 +67,7 @@ class ADD extends React.Component {
                     </Col>
 
                    
-                    <Col span={24}>
+                    <Col span={20}>
                         <FormItem {...formItemLayout} label="房间状态">
                             {getFieldDecorator('status', {
                                 rules: [
@@ -74,7 +77,7 @@ class ADD extends React.Component {
                                     },
                                 ],
                             })(
-                                <Select style={{ width: 200 }}>
+                                <Select placeholder="请选择">
                                     <Option value="0">在线</Option>
                                     <Option value="1">已下线</Option>
                                 </Select>
@@ -82,16 +85,17 @@ class ADD extends React.Component {
                         </FormItem>
                     </Col>
 
-                    <Col span={24}>
+                    <Col span={20}>
                         <FormItem {...formItemLayout} label="可入住人数">
                             {getFieldDecorator('totalNum', {
                                 rules: [
                                     {
+                                        required: true,
                                         type: 'integer',
                                         message: '关注数为整数',
                                     },
                                 ],
-                            })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
+                            })(<InputNumber placeholder="请填写/整数" style={{ width: '100%' }} />)}
                         </FormItem>
                     </Col>
 
@@ -104,8 +108,9 @@ class ADD extends React.Component {
         );
         return (
             <span>
-                <Button onClick={modalShow}>添加房间信息</Button>
                 <Modal
+                    okText="确定"
+                    cancelText="取消"
                     title="添加房间信息"
                     visible={isModalShow}
                     onOk={this.handleOk}

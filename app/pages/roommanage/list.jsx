@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Table, Spin, Popconfirm, Button} from 'antd';
 const { Column } = Table;
-import { actions, asyncGet, asyncUpdate, asyncGetRoomDetail, asyncGetRoomImgDetail} from './models';
+import { actions, asyncGet, asyncUpdate, asyncGetRoomDetail, asyncGetRoomImgDetail, asyncGetRoomComments} from './models';
 import { formatViewData } from './utils';
 import styles from './list.css';
 class List extends React.Component {
@@ -13,6 +13,7 @@ class List extends React.Component {
         this.props.getRoomUser(roomOrder);
         this.props.getRoomImg(roomOrder);
         this.props.viewShow();
+        this.props.getRoomComments(roomOrder)
     };
     editHandler = id => {
         this.props.editShow();
@@ -224,6 +225,7 @@ const mapDispatchToProps = dispatch => ({
     updateStatus: content => dispatch(asyncUpdate(content)),
     getRoomUser: roomOrder => dispatch(asyncGetRoomDetail(roomOrder)),
     getRoomImg: roomOrder => dispatch(asyncGetRoomImgDetail(roomOrder)),
+    getRoomComments: roomOrder => dispatch(asyncGetRoomComments(roomOrder)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);
