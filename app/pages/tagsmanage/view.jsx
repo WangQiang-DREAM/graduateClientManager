@@ -3,34 +3,26 @@ import { connect } from 'react-redux';
 import { Modal, Row, Col } from 'antd';
 import { actions } from './models';
 import { formatViewData } from './utils';
-
+import styles from './view.css';
 class View extends React.Component {
     handleCancel = () => {
         this.props.viewHide();
     };
     render() {
-        const { isViewShow, item } = this.props;
-        const viewItem = (() => {
-            return Object.keys(item).map(key => (
-                <Row gutter={20}>
-                    <Col span={6} style={{ textAlign: 'right' }}>
-                        {key}
-                    </Col>
-                    <Col span={18}>{formatViewData(key, item[key])}</Col>
-                </Row>
-            ));
-        })();
+        const { isViewShow } = this.props;
         return (
-            <Modal title="查看详情" visible={isViewShow} onCancel={this.handleCancel} footer={null}>
-                {viewItem}
+            <Modal title="查看详情" width={600} visible={isViewShow} onCancel={this.handleCancel} footer={null}>
+                <div className={styles.presonbox}>
+                    <p></p>
+                </div>
             </Modal>
         );
     }
 }
 
 const mapStateToProps = state => ({
-    item: state.tagsmanage.list.reduce((a, b) => (b.id === state.tagsmanage.currentSelectId ? b : a), {}),
     isViewShow: state.tagsmanage.uiStatus.isViewShow,
+    UserDetail: state.tagsmanage.userDetail,
 });
 
 const mapDispatchToProps = dispatch => ({

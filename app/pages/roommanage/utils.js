@@ -7,7 +7,7 @@ export const enums = {
     ],
     status: [
         { label: '在线', value: '0' },
-        { label: '已下线', value: '1' },
+        { label: '下线', value: '1' },
     ]
 };
 

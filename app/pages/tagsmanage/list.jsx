@@ -9,9 +9,9 @@ class List extends React.Component {
     componentDidMount() {
         this.props.asyncGet();
     }
-    viewHandler = id => {
+    viewHandler = record => {
         this.props.viewShow();
-        this.props.changeCurrentSelectId(id);
+        this.props.getUserDetail(record)
     };
     editHandler = id => {
         this.props.editShow();
@@ -29,7 +29,7 @@ class List extends React.Component {
                     <Button
                         size="small"
                         onClick={() => {
-                            this.viewHandler();
+                            this.viewHandler(record);
                         }}>
                         详情
                     </Button>
@@ -156,6 +156,7 @@ const mapDispatchToProps = dispatch => ({
     changeCurrentSelectId: id => dispatch(actions.changeCurrentSelectId(id)),
     changePagination: pagination => dispatch(actions.changePagination(pagination)),
     changeSort: data => dispatch(actions.changeSort(data)),
+    getUserDetail: record => dispatch(actions.getUserDetail(record)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

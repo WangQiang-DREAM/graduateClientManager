@@ -76,7 +76,6 @@ class ADD extends React.Component {
         );
         return (
             <span>
-                <Button onClick={modalShow}>添加管理员</Button>
                 <Modal
                     title="添加管理员"
                     visible={isModalShow}

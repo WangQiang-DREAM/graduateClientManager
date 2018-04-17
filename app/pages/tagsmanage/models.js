@@ -79,6 +79,14 @@ const models = {
             },
         },
     },
+    userDetail: {
+        data: {},
+        handlers: {
+            getUserDetail(state, action) {
+                return action.payload;
+            },
+        },
+    },
 };
 
 export const actions = createActions(models, path);

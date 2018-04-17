@@ -9,14 +9,24 @@ import Add from './add.jsx';
 class Container extends React.Component {
     render() {
         return (
-            <div style={{padding:'0 10px'}}>
+            <div>
                 <Edit />
                 <View />
                 <Search />
-                <div style={{textAlign: 'left', paddingBottom: 20}}>
-                    <Add />
+                <Add />
+                <div
+                    style={{
+                        background: '#f0f2f5',
+                        padding: '25px'
+                    }}>
+                    <div
+                        style={{
+                            background: '#fff',
+                            padding: '15px'
+                        }}>
+                        <List />
+                    </div>
                 </div>
-                <List />
             </div>
         );
     }

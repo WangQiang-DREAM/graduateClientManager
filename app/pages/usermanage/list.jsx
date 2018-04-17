@@ -30,7 +30,7 @@ class List extends React.Component {
                     this.removeManager(record.uid);
                 }}
             >
-                <Button>删除</Button>
+                <Button type='danger'>删除</Button>
             </Popconfirm>
         )
     };
@@ -67,7 +67,7 @@ class List extends React.Component {
                     />
                     <Column
                         width={'25%'}
-                        title="访问统计权限"
+                        title="访问权限"
                         dataIndex="roles"
                         key="roles"
                         render={text => {

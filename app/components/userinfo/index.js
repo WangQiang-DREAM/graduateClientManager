@@ -1,14 +1,15 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {withRouter} from 'react-router-dom';
-import {asyncLogout} from '../../common/models/user';
+import { asyncLogout, actions} from '../../common/models/user';
 import {afterLogout} from 'utils';
 import {checkLogin} from '../../utils/';
-import {Button, Menu, Dropdown, Icon} from 'antd';
+import { Button, Menu, Dropdown, Icon, Popconfirm} from 'antd';
 import {Badge} from 'antd';
 import styles from './index.css';
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
+
 class Comp extends React.Component {
     // logout = async () => {     await this.props.asyncLogout();     afterLogout();
     // };
@@ -34,7 +35,9 @@ class Comp extends React.Component {
         };
     }
     handleClick= e => {
-        console.log('click ', e);
+        if (e.key == 'setting') {
+            this.props.viewShow();
+        } 
         this.setState({
             current: e.key,
         });
@@ -48,6 +51,7 @@ class Comp extends React.Component {
                 }}>
                     <Menu
                         mode="horizontal"
+                        onClick={this.handleClick}
                     >
                         <SubMenu title={<span> <span className={styles.remark}>
                             <Badge count={5} style={{paddingRight: '10px'}}>
@@ -56,12 +60,17 @@ class Comp extends React.Component {
                                 </a>
                             </Badge>
                         </span> {props.user_name}</span>}>
-                            <Menu.Item key="setting:3"><Icon type="user" />个人中心</Menu.Item>
-                            <Menu.Item key="setting:4"><Icon type="setting" />设置</Menu.Item>
+                            <Menu.Item key="setting"><Icon type="user" />密码修改</Menu.Item>
                             <Menu.Item>
-                                <a onClick={this.logOut}>
-                                    <Icon type="logout" />退出登录
-                                </a>
+                                <Popconfirm
+                                    title="确定要退出？"
+                                    okText="确定"
+                                    cancelText="取消"
+                                    onConfirm={() => {
+                                        this.logOut()
+                                    }}>
+                                    <a><Icon type="logout" />退出登录</a>
+                                </Popconfirm>
                             </Menu.Item>
                         </SubMenu>
                     </Menu>                      
@@ -83,6 +92,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     asyncLogout: () => dispatch(asyncLogout()),
+    viewShow: () => dispatch(actions.changeUiStatus({ isViewShow: true })),
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Comp));

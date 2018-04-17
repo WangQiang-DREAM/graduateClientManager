@@ -6,6 +6,7 @@ const { Header, Sider, Content } = Layout;
 import Nav from '../components/nav/';
 import Breadcrumb from '../components/breadcrumb/';
 import UserInfo from '../components/userinfo/';
+import Personal from '../components/personal/';
 import NoPermissions from '../pages/nopermissions';
 import store from '../store';
 import { routerList } from '../routerConfig';
@@ -48,8 +49,8 @@ class Comp extends React.Component {
                         <Icon
                             className={styles.trigger}
                             type={this.state.collapsed
-                            ? 'menu-unfold'
-                            : 'menu-fold'}
+                                ? 'menu-unfold'
+                                : 'menu-fold'}
                             onClick={this.toggle}/>
                     </Col>
                 </Sider>
@@ -62,6 +63,7 @@ class Comp extends React.Component {
                                 </div>
                             </Col>
                             <Col span={8}>
+                                <Personal />
                                 <UserInfo/>
                             </Col>
                         </Row>

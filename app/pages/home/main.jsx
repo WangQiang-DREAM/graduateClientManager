@@ -151,7 +151,7 @@ class Main extends React.Component {
                     }
                 ];
 
-        return list.map((item) => {
+        return list.map(item => {
         const events = item.template.split(/@\{([^{}]*)\}/gi).map((key) => {
             if (item[key]) {
             return <a href={item[key].link} key={item[key].name}>{item[key].name}</a>;

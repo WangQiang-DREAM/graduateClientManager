@@ -34,9 +34,9 @@ class Search extends React.Component {
                     </Col>
 
                     <Col span={6}>
-                        <FormItem {...formItemLayout} label="访问统计权限">
+                        <FormItem {...formItemLayout} label="访问权限">
                             {getFieldDecorator('roles', {})(
-                                <Select defaultValue="1" style={{ width: 120 }}>
+                                <Select defaultValue="1" style={{ width: '100%' }}>
                                     <Option value="1">普通管理员</Option>
                                     <Option value="2">超级管理员</Option>
                                 </Select>
@@ -49,6 +49,10 @@ class Search extends React.Component {
                         <Button type="primary" htmlType="submit">
                             搜索
                         </Button>
+                       
+                    </Col>
+                    <Col span={6} className={styles.m_tools}>
+                        <Button onClick={this.props.modalShow}>添加管理员</Button>
                     </Col>
                 </Row>
             </Form>
@@ -60,6 +64,7 @@ const mapDispatchToProps = dispatch => ({
     asyncGet: () => dispatch(asyncGet()),
     changeSearchValues: params => dispatch(actions.changeSearchValues(params)),
     resetPagination: () => dispatch(actions.changePagination({ current: 1 })),
+    modalShow: () => dispatch(actions.changeUiStatus({ isAddShow: true })),
 });
 
 export default connect(null, mapDispatchToProps)(Form.create()(Search));

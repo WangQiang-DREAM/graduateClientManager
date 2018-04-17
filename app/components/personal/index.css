@@ -1,0 +1,47 @@
+.ant_pwd_strength {
+  display: inline-block;
+  margin-left: 8px;
+  line-height: 32px;
+  height: 32px;
+  vertical-align: middle;
+}
+
+.ant_pwd_strength_item {
+  float: left;
+  margin-right: 1px;
+  margin-top: 12px;
+  width: 19px;
+  height: 8px;
+  line-height: 8px;
+  list-style: none;
+  background-color: #f3f3f3;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.ant_pwd_strength_item_1 {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.ant_pwd_strength_item_2 {
+  width: 20px;
+}
+
+.ant_pwd_strength_item_3 {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  margin-right: 8px;
+}
+
+.ant_pwd_strength_low .ant_pwd_strength_item_1, .ant_pwd_strength_medium .ant_pwd_strength_item_1, .ant_pwd_strength_high .ant_pwd_strength_item_1 {
+  background-color: #FAC450;
+}
+
+.ant_pwd_strength_medium .ant_pwd_strength_item_2, .ant_pwd_strength_high .ant_pwd_strength_item_2 {
+  background-color: rgba(135, 208, 104, .6);
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#9987D068,endColorstr=#9987D068);
+}
+
+.ant_pwd_strength_high .ant_pwd_strength_item_3 {
+  background-color: #87D068;
+}

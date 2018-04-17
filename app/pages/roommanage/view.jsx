@@ -107,22 +107,12 @@ class View extends React.Component {
         let photonum = roomDetail.image.length;
         let coommentnum = this.props.roomComments.length;
         return (
-            <Modal className={styles.modal} title="查看房间详情" width={'69%'} visible={isViewShow} onCancel={this.handleCan} footer={null}>
+            <Modal className={styles.modal} title="查看房间详情" width={'66%'} visible={isViewShow} onCancel={this.handleCan} footer={null}>
                 <Spin spinning={isLoading} tip="请稍等...">
-                    <Card style={{ width: '100%', marginBottom: 15 }} bodyStyle={{ padding: 10 }} bordered={false}>
-                        <div style={{ padding: '0 0 5px 10px', borderBottom: '1px solid #dcdcdc', marginBottom: '10px', color: '#000' }}> 房间图片({photonum})</div>
-                        <div style={{ display: 'block' }} className={styles.imgbox}>
-                            <div className={styles.upload}>
-                                <Upload {...props}>
-                                    <Icon type="plus" />
-                                    <div className={styles.ant_upload_text}>上传照片</div>
-                                </Upload>
-                            </div>
-                        </div>
-                    </Card>
-                    <Table size="middle" dataSource={list} pagination={false} style={{
+                    <Table size="small" bordered dataSource={list} pagination={false} style={{
                         marginBottom: 15,
-                        background: '#fff'
+                        background: '#fff',
+                        padding: '10px'
                     }}>
                         <Column
                             title="床位号"
@@ -157,6 +147,17 @@ class View extends React.Component {
                             }}
                         />
                     </Table> 
+                    <Card style={{ width: '100%', marginBottom: 15 }} bodyStyle={{ padding: 10 }} bordered={false}>
+                        <div style={{ padding: '0 0 5px 10px', borderBottom: '1px solid #dcdcdc', marginBottom: '10px', color: '#000' }}> 房间图片({photonum})</div>
+                        <div style={{ display: 'block' }} className={styles.imgbox}>
+                            <div className={styles.upload}>
+                                <Upload {...props}>
+                                    <Icon type="plus" />
+                                    <div className={styles.ant_upload_text}>上传照片</div>
+                                </Upload>
+                            </div>
+                        </div>
+                    </Card>
                     <Card
                         bordered={false}
                         bodyStyle={{
