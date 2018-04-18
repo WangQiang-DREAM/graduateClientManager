@@ -1,16 +1,22 @@
 import { createReducers, createActions, request, sleep } from '../../utils/';
 import { combineReducers } from 'redux';
 import { APIHOST } from '../../config';
+import { notification, message} from 'antd';
 
 const urls = {
     get: APIHOST + 'user/queryAllUsers',
     del: APIHOST + 'booksdel',
-    update: APIHOST + 'booksupdate',
+    updateUserType: APIHOST + 'user/updateUserType',
+    changeRoomUserNum: APIHOST + 'room/changeRoomUserNum',
     add: APIHOST + 'booksadd',
 };
 
 const path = name => `app/pages/tagsmanage/${name}`;
-
+const successError = (type, msg) => {
+    notification[type]({
+        message: msg
+    });
+};
 const models = {
     list: {
         data: [],
@@ -80,7 +86,22 @@ const models = {
         },
     },
     userDetail: {
-        data: {},
+        data: {
+            uid: '',
+            avatar: '',
+            name: '',
+            email: '',
+            password: '',
+            registerTime: '',
+            checkInTime: '',
+            sex: '',
+            age: '',
+            roomOrder: '',
+            bedId: '',
+            familyAddress: '',
+            familyNam: '',
+            familyPhone: '',
+        },
         handlers: {
             getUserDetail(state, action) {
                 return action.payload;
@@ -140,15 +161,26 @@ export const asyncDel = id => {
         }
     };
 };
-
-export const asyncUpdate = content => {
-    return async dispatch => {
+// 用户退订
+export const asyncUpdateUserType = content => {
+    return async (dispatch, getState) => {
         try {
             dispatch(actions.changeUiStatus({ isLoading: true }));
             // 下面的请求和结果返回需要根据接口来实现
-            let updateContent = await request(urls.update, 'POST', content);
-            await sleep(1000);
-            dispatch(actions.update(updateContent));
+            let result = await request(urls.updateUserType + '?body=' + encodeURIComponent(JSON.stringify({ uid: content.uid, userType: content.userType })));
+            if ( result.ok == 1) {
+                let changeres = await request(urls.changeRoomUserNum + '?body=' + encodeURIComponent(JSON.stringify({ roomOrder: content.roomOrder, inc: -1 })));
+                if (changeres.ok == 1) {
+                    let result = await request(urls.get + formatGetParams(getState));
+                    dispatch(actions.get(result.docs));
+                    dispatch(actions.changePagination(result.pagination));
+                    successError('success', '已成功退订！');
+                } else {
+
+                }
+            } else {
+
+            }
         } catch (e) {
             throw e;
         } finally {

@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Spin, Popconfirm ,Button} from 'antd';
+import { Table, Spin, Popconfirm, Button} from 'antd';
 const { Column } = Table;
-import { actions, asyncGet, asyncDel } from './models';
+import { actions, asyncGet, asyncDel, asyncUpdateUserType } from './models';
 import { formatViewData } from './utils';
 import styles from './list.css'
 class List extends React.Component {
@@ -13,14 +13,14 @@ class List extends React.Component {
         this.props.viewShow();
         this.props.getUserDetail(record)
     };
-    editHandler = id => {
-        this.props.editShow();
-        this.props.changeCurrentSelectId(id);
-    };
-    changeHandle = (pagination, filters, sorter) => {
-        this.props.changePagination(pagination);
-        this.props.changeSort({ key: sorter.field, order: sorter.order });
-        this.props.asyncGet();
+    editHandler = (uid, roomOrder) => {
+        // this.props.editShow();
+        const content = {
+            uid: uid,
+            userType: '1',
+            roomOrder: roomOrder,
+        };
+        this.props.updateUserType(content);
     };
     renderAction = (text, record) => {
         if (record.userType == '2') {
@@ -33,6 +33,16 @@ class List extends React.Component {
                         }}>
                         详情
                     </Button>
+                    <span className="ant-divider" />
+                    <Popconfirm
+                        title="确定要退订吗？"
+                        okText="确定"
+                        cancelText="取消"
+                        onConfirm={() => {
+                            this.editHandler(record.uid, record.roomOrder);
+                        }}>
+                        <Button type="danger" size="small" >退订</Button>
+                    </Popconfirm>
                 </span>
             );
         }
@@ -87,29 +97,17 @@ class List extends React.Component {
                             return formatViewData('sex', text);
                         }}
                     />
-
-                    <Column
-                        title="年龄"
-                        dataIndex="age"
-                        key="age"
-                        sorter={true}
-                        render={text => {
-                            return formatViewData('age', text);
-                        }}
-                    />
-
                     <Column
                         title="入住时间"
                         dataIndex="checkInTime"
                         key="checkInTime"
                         sorter={true}
                         render={text => {
-                            if (text != null) {
+                            if (text !== null) {
                                 return formatViewData('checkInTime', text);
                             } else {
                                 return (<span style={{ color: 'red' }}>暂无</span>)
-                            }
-                           
+                            } 
                         }}
                     />
 
@@ -157,6 +155,7 @@ const mapDispatchToProps = dispatch => ({
     changePagination: pagination => dispatch(actions.changePagination(pagination)),
     changeSort: data => dispatch(actions.changeSort(data)),
     getUserDetail: record => dispatch(actions.getUserDetail(record)),
+    updateUserType: content => dispatch(asyncUpdateUserType(content)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

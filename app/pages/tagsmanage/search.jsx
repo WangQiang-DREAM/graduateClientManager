@@ -29,7 +29,7 @@ class Search extends React.Component {
                     <Col span={6}>
                         <FormItem {...formItemLayout} label="姓名">
                             {getFieldDecorator('name', {})(
-                                <Input placeholder="请填写" style={{ width: '100%' }} />,
+                                <Input placeholder="请填写/支持模糊搜索" style={{ width: '100%' }} />,
                             )}
                         </FormItem>
                     </Col>

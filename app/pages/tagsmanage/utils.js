@@ -14,7 +14,7 @@ export const enums = {
 export const dataTypes = {
    
     checkInTime: 'DatePicker',
-
+    registerTime: 'DatePicker',
 };
 
 export const formatViewData = (key, values) => {
