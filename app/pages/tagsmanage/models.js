@@ -167,9 +167,9 @@ export const asyncUpdateUserType = content => {
         try {
             dispatch(actions.changeUiStatus({ isLoading: true }));
             // 下面的请求和结果返回需要根据接口来实现
-            let result = await request(urls.updateUserType + '?body=' + encodeURIComponent(JSON.stringify({ uid: content.uid, userType: content.userType })));
+            let result = await request(urls.changeRoomUserNum + '?body=' + encodeURIComponent(JSON.stringify({ roomOrder: content.roomOrder, inc: -1 })));
             if ( result.ok == 1) {
-                let changeres = await request(urls.changeRoomUserNum + '?body=' + encodeURIComponent(JSON.stringify({ roomOrder: content.roomOrder, inc: -1 })));
+                let changeres = await request(urls.updateUserType + '?body=' + encodeURIComponent(JSON.stringify({ uid: content.uid, userType: content.userType, email: content.email })));
                 if (changeres.ok == 1) {
                     let result = await request(urls.get + formatGetParams(getState));
                     dispatch(actions.get(result.docs));

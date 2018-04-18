@@ -13,12 +13,13 @@ class List extends React.Component {
         this.props.viewShow();
         this.props.getUserDetail(record)
     };
-    editHandler = (uid, roomOrder) => {
+    editHandler = (uid, roomOrder, email) => {
         // this.props.editShow();
         const content = {
             uid: uid,
             userType: '1',
             roomOrder: roomOrder,
+            email: email,
         };
         this.props.updateUserType(content);
     };
@@ -39,7 +40,7 @@ class List extends React.Component {
                         okText="确定"
                         cancelText="取消"
                         onConfirm={() => {
-                            this.editHandler(record.uid, record.roomOrder);
+                            this.editHandler(record.uid, record.roomOrder, record.email);
                         }}>
                         <Button type="danger" size="small" >退订</Button>
                     </Popconfirm>
