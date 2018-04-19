@@ -35,66 +35,7 @@ class Search extends React.Component {
                             )}
                         </FormItem>
                     </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="ID">
-                            {getFieldDecorator('id', {})(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="昵称">
-                            {getFieldDecorator('nickName', {})(<Input placeholder="请填写" />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="关注数">
-                            {getFieldDecorator('followNum', {})(
-                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
-                            )}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="粉丝数">
-                            {getFieldDecorator('fansNum', {})(
-                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
-                            )}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="获赞数">
-                            {getFieldDecorator('likeNum', {})(
-                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
-                            )}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="作品数">
-                            {getFieldDecorator('producedVideoNum', {})(
-                                <InputNumber placeholder="请填写" style={{ width: '100%' }} />,
-                            )}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="注册时间">
-                            {getFieldDecorator('registerTime', {})(
-                                <DatePicker style={{ width: '100%' }} placeholder="请选择" />,
-                            )}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={6}>
-                        <FormItem {...formItemLayout} label="操作">
-                            {getFieldDecorator('operation', {})(<Input placeholder="请填写" />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24} className={styles.m_tools}>
+                    <Col span={12} className={styles.m_tools}>
                         <Button onClick={this.resetForm}>重置</Button>
                         <Button type="primary" htmlType="submit">
                             搜索

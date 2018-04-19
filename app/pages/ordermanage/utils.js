@@ -1,25 +1,15 @@
 import moment from 'moment';
 
-export const enums = {};
+export const enums = {
+    status: [
+        { label: '待处理', value: '0' },
+        { label: '进行中', value: '1' },
+        { label: '已处理', value: '2' },
+    ]
+};
 
 export const dataTypes = {
-    orderNumber: 'InputNumber',
-
-    id: 'InputNumber',
-
-    nickName: 'Input',
-
-    followNum: 'InputNumber',
-
-    fansNum: 'InputNumber',
-
-    likeNum: 'InputNumber',
-
-    producedVideoNum: 'InputNumber',
-
-    registerTime: 'DatePicker',
-
-    operation: 'Input',
+   
 };
 
 export const formatViewData = (key, values) => {

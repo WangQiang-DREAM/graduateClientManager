@@ -144,7 +144,7 @@ class View extends React.Component {
                             })(
                                 <Input
                                     type="password"
-                                    placeholder="原密码"
+                                    placeholder="请输入原密码"
                                 />,
                             )}
                         </FormItem>

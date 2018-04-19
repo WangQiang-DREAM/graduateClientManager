@@ -3,7 +3,9 @@ import { combineReducers } from 'redux';
 import { APIHOST } from '../../config';
 
 const urls = {
-    get: APIHOST + '',
+    get: APIHOST + 'appo/queryAppoInfo',
+    getManager: APIHOST + 'user/queryAllManager',
+    changeAppoStatus: APIHOST + 'appo/changeAppoStatus',
     del: APIHOST + 'booksdel',
     update: APIHOST + 'booksupdate',
     add: APIHOST + 'booksadd',
@@ -25,7 +27,9 @@ const models = {
                 return state.filter(item => item.id !== action.payload);
             },
             update(state, action) {
-                return state.map(item => (item.id === action.payload.id ? action.payload : item));
+                console.log(state)
+                console.log(action.payload)
+                return state.map(item => (item.appoId == action.payload.appoId ? action.payload : item));
             },
         },
     },
@@ -33,7 +37,7 @@ const models = {
         data: {
             current: 1,
             total: 0,
-            pageSize: 20,
+            pageSize: 10,
         },
         handlers: {
             changePagination(state, action) {
@@ -50,7 +54,7 @@ const models = {
         },
     },
     sortValues: {
-        data: {},
+        data: { 'key': 'appoTime', 'order': 'descend' },
         handlers: {
             changeSort(state, action) {
                 return action.payload;
@@ -75,6 +79,14 @@ const models = {
         data: '',
         handlers: {
             changeCurrentSelectId(state, action) {
+                return action.payload;
+            },
+        },
+    },
+    manager: {
+        data: [],
+        handlers: {
+            getManager(state, action) {
                 return action.payload;
             },
         },
@@ -108,7 +120,8 @@ export const asyncGet = () => {
             dispatch(actions.changeUiStatus({ isLoading: true }));
             // 下面的请求和结果返回需要根据接口来实现
             let result = await request(urls.get + formatGetParams(getState));
-            dispatch(actions.get(result.list));
+            console.log(result)
+            dispatch(actions.get(result.docs));
             dispatch(actions.changePagination(result.pagination));
         } catch (e) {
             throw e;
@@ -157,6 +170,51 @@ export const asyncAdd = contents => {
             let newContents = await request(urls.add, 'POST', contents);
             await sleep(1000);
             dispatch(actions.add(newContents));
+        } catch (e) {
+            throw e;
+        } finally {
+            dispatch(actions.changeUiStatus({ isLoading: false }));
+        }
+    };
+};
+
+// 查询管理员
+export const asyncGetManager = () => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch(actions.changeUiStatus({ isLoading: true }));
+            // 下面的请求和结果返回需要根据接口来实现
+            let result = await request(
+                urls.getManager +
+                    '?body=' +
+                    encodeURIComponent(
+                        JSON.stringify({
+                            querys: {},
+                            sort: {},
+                            pagination: { current: 1, pageSize: 100 },
+                        }),
+                    ),
+            );
+            dispatch(actions.getManager(result.docs));
+        } catch (e) {
+            throw e;
+        } finally {
+            dispatch(actions.changeUiStatus({ isLoading: false }));
+        }
+    };
+};
+
+export const asyncUpdateAppoStatus = param => {
+    return async dispatch => {
+        try {
+            dispatch(actions.changeUiStatus({ isLoading: true }));
+            // 下面的请求和结果返回需要根据接口来实现
+            let result = await request(urls.changeAppoStatus + '?body=' + encodeURIComponent(JSON.stringify({
+                appoId: param.appoId,
+                email: param.email,
+                status: param.status,
+                emailStatus: param.emailStatus })));
+            dispatch(actions.update(result.dbResult));
         } catch (e) {
             throw e;
         } finally {

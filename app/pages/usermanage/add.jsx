@@ -35,10 +35,10 @@ class ADD extends React.Component {
                                 rules: [
                                     {
                                         required: true,
-                                        message: '请填写用户名',
+                                        message: '请填写用户名/字母加数字',
                                     },
                                 ],
-                            })(<Input style={{ width: 200 }} placeholder="请填写" />)}
+                            })(<Input style={{ width: 200 }} placeholder="请填写用户名/字母加数字" />)}
                         </FormItem>
                     </Col>
 

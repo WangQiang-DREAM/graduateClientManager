@@ -1,0 +1,151 @@
+
+.headerInfo {
+    position: relative;
+    text-align: center;
+    &>span {
+        color: #999;
+        display: inline-block;
+        font-size: 14px;
+        line-height: 22px;
+        margin-bottom: 4px;
+    }
+    &>p {
+        color: #333;
+        font-size: 24px;
+        line-height: 32px;
+        margin: 0;
+    }
+    &>em {
+        background-color:rgb(240, 242, 245);
+        position: absolute;
+        height: 56px;
+        width: 1px;
+        top: 0;
+        right: 0;
+    }
+}
+ .listContent {
+     font-size: 0;
+     position: relative;
+     right: 80px;
+ }
+
+ .extraContentSearch {
+     margin-left: 33px;
+     width: 252px;
+     font-size: 12px !important
+ }
+.standardList {
+   background: rgb(240, 242, 245)
+}
+.listContentItem {
+            color: #999;
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 14px;
+            margin-left: 40px;
+            font-family: "Monospaced Number", "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
+.listContentItem p {
+        margin-top: 4px;
+        margin-bottom: 0 !important;
+        line-height: 22px;
+}
+.listContentItem span {
+        line-height: 20px;
+        font-family: "Monospaced Number", "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif!important;
+}
+@media screen and (max-width: 320px) {
+    .ant-list-item-content {
+        display: block;
+        flex: none;
+        width: 100%;
+    }
+
+    .ant-list-item-action {
+        margin-left: 0;
+    }
+
+    .listContent {
+        margin-left: 0;
+        &>div {
+            margin-left: 0;
+        }
+    }
+
+    .listCard {
+        .ant-card-head-title {
+            overflow: visible;
+        }
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .extraContentSearch {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .headerInfo {
+        margin-bottom: 16px;
+        &>em {
+            display: none;
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+        .listContent {
+        &>div {
+            display: block;
+        }
+        &>div:last-child {
+            top: 0;
+            width: 100%;
+        }
+    }
+    .listCard .ant-radio-group {
+        display: block;
+        margin-bottom: 8px;
+    }
+}
+
+@media screen and (max-width: 992px) and (min-width:768px) {
+
+    .listContent {
+        &>div {
+            display: block;
+        }
+        &>div:last-child {
+            top: 0;
+            width: 100%;
+        }
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .listContent {
+        &>div {
+            margin-left: 14px;
+        }
+        &>div:last-child {
+            top: 0;
+        }
+    }
+}
+
+@media screen and (max-width: 1400px) {
+    .standardList {
+        
+    }
+    .listContent {
+        text-align: right;
+        &>div:last-child {
+            top: 0;
+        }
+    }
+}
+p  {
+    margin-bottom: 0 !important;
+     font-family: "PingFang SC"!important;
+}

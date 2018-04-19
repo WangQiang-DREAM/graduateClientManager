@@ -13,11 +13,20 @@ class Container extends React.Component {
             <div>
                 <Edit />
                 <View />
-                <Search />
+                {/*<Search />
                 <div style={{textAlign: 'right', paddingBottom: 20}}>
                     <Add /> <AddPlus />
                 </div>
-                <List />
+                */}
+                <div
+                    style={{
+                        background: '#f0f2f5',
+                        padding: '25px'
+                    }}>
+                    <div>
+                        <List />
+                    </div>
+                </div>
             </div>
         );
     }
