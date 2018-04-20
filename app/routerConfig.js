@@ -103,16 +103,6 @@ export const routerTree = formatRouteTreeByRoles([
                 roles: [1, 2],
             },
             {
-                path: '/roommanage',
-                comp: Roommanage,
-                exact: true,
-                value: '房间管理',
-                isDisplay: true,
-                type: 'leaf',
-                iconType: 'appstore-o',
-                roles: [2],
-            },
-            {
                 path: '/ordermanage',
                 comp: Ordermanage,
                 exact: true,
@@ -122,6 +112,17 @@ export const routerTree = formatRouteTreeByRoles([
                 iconType: 'tags-o',
                 roles: [1, 2],
             },
+            {
+                path: '/roommanage',
+                comp: Roommanage,
+                exact: true,
+                value: '房间管理',
+                isDisplay: true,
+                type: 'leaf',
+                iconType: 'appstore-o',
+                roles: [2],
+            },
+            
             {
                 path: '/tagsmanage',
                 comp: Tagsmanage,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Spin, Popconfirm ,List, Card, Row, Col, Radio, Input, Button, Icon, Dropdown, Menu, Avatar } from 'antd';
-import { actions, asyncGet, asyncDel, asyncGetManager, asyncUpdateAppoStatus } from './models';
+import { actions, asyncGet, asyncDel, asyncGetManager, asyncUpdateAppoStatus, asyncGetRoom } from './models';
 import { formatViewData } from './utils';
 import styles from './list.css'
 import moment from 'moment';
@@ -12,34 +12,66 @@ class MList extends React.Component {
     componentDidMount() {
         this.props.asyncGet();
         this.props.getManager();
+        this.props.getRoom()
     }
     viewStatusChange = e => {
-        if ( e.target.value === 'all') {
-            this.props.changeSearchValues({});
-            this.props.resetPagination();
-            this.props.asyncGet();
-        } else {
-            let values = {
-                status: e.target.value,
-            };
-            this.props.changeSearchValues(values);
-            this.props.resetPagination();
-            this.props.asyncGet();
-        }
-    };
-    onSearch = e => {
-        let manager = this.props.manager;
+        let currentSearch = this.props.searchValue;
         let values = {};
-        for (let i = 0; i < manager.length; i++) {
-            if (manager[i].name === e) {
-                values = {
-                    receptionist: e,
+        if (currentSearch.name !== undefined ) { 
+            if (e.target.value === 'all') {
+                values = { 
+                    name: currentSearch.name,
                 };
-                break;
             } else {
                 values = {
-                    name: e,
+                    status: e.target.value,
+                    name: currentSearch.name,
+                }; 
+            }
+        } else {
+            if (e.target.value === 'all') {
+                values = {};
+            } else {
+                values = {
+                    status: e.target.value,
                 };
+            }
+        }
+        this.props.changeSearchValues(values);
+        this.props.resetPagination();
+        this.props.asyncGet();
+    };
+    onSearch = e => {
+        let currentSearch = this.props.searchValue;
+        let manager = this.props.manager;
+        let values = {};
+        if (currentSearch.status !== undefined) { 
+            for (let i = 0; i < manager.length; i++) {
+                if (manager[i].name === e) {
+                    values = {
+                        receptionist: e,
+                        status: currentSearch.status,
+                    };
+                    break;
+                } else {
+                    values = {
+                        name: e,
+                        status: currentSearch.status,
+                    };
+                }
+            }
+        } else {
+            for (let i = 0; i < manager.length; i++) {
+                if (manager[i].name === e) {
+                    values = {
+                        receptionist: e,
+                    };
+                    break;
+                } else {
+                    values = {
+                        name: e,
+                    };
+                }
             }
         }
         this.props.changeSearchValues(values);
@@ -56,11 +88,10 @@ class MList extends React.Component {
         this.props.asyncGet();
     };
     viewStatus = status => {
-        if (status == '0') {
+        if (status === '0') {
             return (
                 <span style={{ color: 'red' }}>{formatViewData('status', status)}</span>
             )
-        } else if (status == '1') {
             return (
                 <span style={{ color: 'blue' }}>{formatViewData('status', status)}</span>
             )
@@ -70,11 +101,13 @@ class MList extends React.Component {
             )
         }
     }
-    buttonView = (appoId, status, email) => {
+    buttonView = (appoId, status, email, uid) => {
         [<Button size='small'>接受</Button>]
         if (status == '0') {
             return [
-                <Button type='primary' size='small'>接受</Button>,
+                <Button type='primary' onClick={() => {
+                    this.receiveAppo(appoId, email)
+                }}>接受</Button>,
                 <Popconfirm
                     title="确定要拒绝预约吗？"
                     okText="确定"
@@ -82,10 +115,14 @@ class MList extends React.Component {
                     onConfirm={() => {
                         this.rejectAppo(appoId, email)
                     }}>
-                    <Button type="danger" size="small" >拒绝</Button>
+                    <Button type="danger" >拒绝</Button>
                 </Popconfirm> ]
         } else if (status == '1') {
-            return [<Button type='primary' size='small'>入住办理</Button>, <Button size='small'>其他</Button>]
+            return [<Button type='primary' onClick={() => {
+                this.checkIn(appoId, email, uid)
+            }}>入住</Button>, <Button onClick={() => {
+                this.nocheckIn(appoId, email)
+            }}>不入住</Button>]
         } else {
             return [<a></a>]
         }
@@ -97,12 +134,41 @@ class MList extends React.Component {
             email: email,
             status: '2',
             emailStatus: 'reject',
-        }
-        this.props.updateAppoStatus(param)
+        };
+        this.props.updateAppoStatus(param);
     }
+
     // 接受
     receiveAppo = (appoId, email) => {
-
+        let param = {
+            appoId: appoId,
+            email: email,
+            status: '1',
+            emailStatus: 'receive',
+        };
+        this.props.updateAppoStatus(param);
+    }
+    // 入住
+    checkIn = (appoId, email, uid) => {
+        let param = {
+            appoId: appoId,
+            email: email,
+            status: '2',
+            emailStatus: 'checkin',
+            uid: uid,
+        };
+        this.props.setCurrentAppo(param);
+        this.props.editShow();
+    }
+    // 不入住
+    nocheckIn = (appoId, email) => {
+        let param = {
+            appoId: appoId,
+            email: email,
+            status: '2',
+            emailStatus: 'nocheckin',
+        };
+        this.props.updateAppoStatus(param);
     }
     render() {
         // const list = [
@@ -152,7 +218,7 @@ class MList extends React.Component {
                 </RadioGroup>
                 <Search
                     className={styles.extraContentSearch}
-                    placeholder="请输入预约人姓名/按回车键搜索"
+                    placeholder="输入预约人或接待人姓名/按回车搜索"
                     onSearch={value => {
                         this.onSearch(value);
                     }}
@@ -206,7 +272,7 @@ class MList extends React.Component {
                             dataSource={list}
                             renderItem={item => (
                                 <List.Item
-                                    actions={this.buttonView(item.appoId, item.status, item.email)}
+                                    actions={this.buttonView(item.appoId, item.status, item.email, item.uid)}
                                 >
                                     <List.Item.Meta
                                         avatar={<Avatar src={item.avatar} shape="square" size="large" />}
@@ -229,6 +295,7 @@ const mapStateToProps = state => ({
     isLoading: state.ordermanage.uiStatus.isLoading,
     pagination: state.ordermanage.pagination,
     manager: state.ordermanage.manager,
+    searchValue: state.ordermanage.searchValues,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -243,7 +310,9 @@ const mapDispatchToProps = dispatch => ({
     changeSearchValues: params => dispatch(actions.changeSearchValues(params)),
     resetPagination: () => dispatch(actions.changePagination({ current: 1, pageSize: 10 })),
     getManager: () =>dispatch(asyncGetManager()),
-    updateAppoStatus: param => dispatch(asyncUpdateAppoStatus(param))
+    updateAppoStatus: param => dispatch(asyncUpdateAppoStatus(param)),
+    getRoom: () => dispatch(asyncGetRoom()),
+    setCurrentAppo: param => dispatch(actions.changeCurrentAppo(param))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MList);

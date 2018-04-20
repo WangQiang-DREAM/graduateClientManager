@@ -1,15 +1,38 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Modal, Row, Col, Spin, Form } from 'antd';
-
-import { InputNumber, Input, DatePicker } from 'antd';
+import { Modal, Row, Spin, Form, InputNumber, Input, Divider, Radio, Select, Col, Cascader} from 'antd';
 
 import moment from 'moment';
 
 import { actions, asyncUpdate } from './models';
 import { formItemLayout, formatFormData } from './utils';
 const FormItem = Form.Item;
-
+const InputGroup = Input.Group;
+const Option = Select.Option;
+const RadioGroup = Radio.Group;
+const areaData = [{
+    value: 'zhejiang',
+    label: '浙江',
+    children: [{
+        value: 'hangzhou',
+        label: '杭州',
+        children: [{
+            value: 'xihu',
+            label: '西湖',
+        }],
+    }],
+}, {
+    value: 'jiangsu',
+    label: '江苏',
+    children: [{
+        value: 'nanjing',
+        label: '南京',
+        children: [{
+            value: 'zhonghuamen',
+            label: '中华门',
+        }],
+    }],
+}];
 class Edit extends React.Component {
     handleCancel = () => {
         this.props.form.resetFields();
@@ -27,146 +50,155 @@ class Edit extends React.Component {
     render() {
         const { isModalShow, isLoading, item } = this.props;
         const { getFieldDecorator } = this.props.form;
+        const { getFieldProps } = this.props.form;
         const form = (
             <Form>
+                <FormItem {...formItemLayout} hasFeedback label="姓名">
+                    {getFieldDecorator('name', {
+                        rules: [
+                            {
+                                required: true,
+                                message: '请填写姓名',
+                            }
+                        ],
+                    })(<Input placeholder="请填写" style={{ width: '120px' }} />)}
+                </FormItem>
                 <Row>
                     <Col span={24}>
-                        <FormItem {...formItemLayout} label="序号">
-                            {getFieldDecorator('orderNumber', {
-                                initialValue: item.orderNumber,
-
+                        <FormItem
+                            label="身份证"
+                            {...formItemLayout}
+                            hasFeedback
+                        > 
+                            {getFieldDecorator('idCardNum', {
                                 rules: [
                                     {
                                         required: true,
-                                        message: '请填写序号',
+                                        message: '请填写身份证号码',
                                     },
-
                                     {
-                                        type: 'integer',
-                                        message: '序号为整数',
-                                    },
+                                        min: 18, 
+                                        max: 18,
+                                        message: '身份证号码为 18位'
+                                    }
                                 ],
-                            })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="ID">
-                            {getFieldDecorator('id', {
-                                initialValue: item.id,
-
-                                rules: [
-                                    {
-                                        type: 'integer',
-                                        message: 'ID为整数',
-                                    },
-                                ],
-                            })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="昵称">
-                            {getFieldDecorator('nickName', {
-                                initialValue: item.nickName,
-
-                                rules: [],
-                            })(<Input placeholder="请填写" />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="关注数">
-                            {getFieldDecorator('followNum', {
-                                initialValue: item.followNum,
-
-                                rules: [
-                                    {
-                                        type: 'integer',
-                                        message: '关注数为整数',
-                                    },
-                                ],
-                            })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="粉丝数">
-                            {getFieldDecorator('fansNum', {
-                                initialValue: item.fansNum,
-
-                                rules: [
-                                    {
-                                        type: 'integer',
-                                        message: '粉丝数为整数',
-                                    },
-                                ],
-                            })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="获赞数">
-                            {getFieldDecorator('likeNum', {
-                                initialValue: item.likeNum,
-
-                                rules: [
-                                    {
-                                        type: 'integer',
-                                        message: '获赞数为整数',
-                                    },
-                                ],
-                            })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="作品数">
-                            {getFieldDecorator('producedVideoNum', {
-                                initialValue: item.producedVideoNum,
-
-                                rules: [
-                                    {
-                                        type: 'integer',
-                                        message: '作品数为整数',
-                                    },
-                                ],
-                            })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="注册时间">
-                            {getFieldDecorator('registerTime', {
-                                initialValue: moment(item.registerTime),
-
-                                rules: [],
-                            })(<DatePicker style={{ width: '100%' }} placeholder="请选择" />)}
-                        </FormItem>
-                    </Col>
-
-                    <Col span={24}>
-                        <FormItem {...formItemLayout} label="操作">
-                            {getFieldDecorator('operation', {
-                                initialValue: item.operation,
-
-                                rules: [],
-                            })(<Input placeholder="请填写" />)}
+                            })(<Input placeholder="请填写" style={{ width: '260px' }} />)}
                         </FormItem>
                     </Col>
                 </Row>
+                <FormItem {...formItemLayout} hasFeedback label="年龄">
+                    {getFieldDecorator('age', {
+                        rules: [
+                            {
+                                required: true,
+                                message: '请填写年龄',
+                            },
+                            {
+                                type: 'integer',
+                                message: '年龄为整数',
+                            }
+                        ],
+                    })(<InputNumber placeholder="请填写" style={{ width: '120px' }} />)}
+                </FormItem>
+                <FormItem
+                    {...formItemLayout}
+                    label="性别"
+                    required
+                    hasFeedback
+                >
+                    {getFieldDecorator('sex', {
+                        rules: [
+                            {
+                                required: true,
+                                message: '请填写性别',
+                            }
+                        ],
+                    })(
+                        <RadioGroup>
+                            <Radio value={0}>男</Radio>
+                            <Radio value={1}>女</Radio>
+                        </RadioGroup>)}
+                </FormItem>
+                
+                <FormItem
+                    label="家庭住址"
+                    {...formItemLayout}
+                    required
+                    hasFeedback
+                >
+                    {getFieldDecorator('familyAddress', {
+                        rules: [
+                            {
+                                required: true,
+                                message: '请填写住址',
+                            }
+                        ],
+                    })(<Cascader style={{ width: 250 }} options={areaData} />
+                    )}     
+                </FormItem>
+                <FormItem hasFeedback {...formItemLayout} label="家属姓名">
+                    {getFieldDecorator('familyName', {
+                        rules: [
+                            {
+                                required: true,
+                                message: '请填写家属姓名',
+                            }
+                        ],
+                    })(<Input style={{width: 150}} placeholder="请填写" />)}
+                </FormItem>     
+                <FormItem
+                    label="家属联系方式"
+                    {...formItemLayout}
+                    hasFeedback
+                >
+                    {getFieldDecorator('familyPhone', {
+                        rules: [
+                            {
+                                required: true,
+                                message: '请填写家属联系方式',
+                            },
+                            {
+                                type: 'integer',
+                                message: '联系方式为整数',
+                            },
+                        ],
+                    })(<InputNumber placeholder="请填写" style={{ width: '180px' }} />)}
+                   
+                </FormItem>
+                <Divider style={{ margin: '40px 0 24px' }} />
+                <FormItem
+                    label="房间床位选择"
+                    {...formItemLayout}
+                    required
+                    hasFeedback
+                >
+                    {getFieldDecorator('roombed', {
+                        rules: [
+                            {
+                                required: true,
+                                message: '请填写',
+                            }
+                        ],
+                    })(<Cascader style={{ width: 250 }} options={this.props.roomnum} />
+                    )}
+                </FormItem>
             </Form>
         );
         return (
             <Modal
-                title="查看详情"
+                title="入住办理"
                 visible={isModalShow}
                 onOk={this.handleOk}
+                okText='提交'
+                cancelText='取消'
+                width={835}
                 onCancel={this.handleCancel}
                 confirmLoading={isLoading}
                 maskClosable={false}>
                 <Spin spinning={isLoading} tip="保存中...">
-                    {form}
+                    <div style={{padding: '10px 10px 10px 10px'}}> 
+                        {form}
+                    </div>
                 </Spin>
             </Modal>
         );
@@ -177,6 +209,8 @@ const mapStateToProps = state => ({
     item: state.ordermanage.list.reduce((a, b) => (b.id === state.ordermanage.currentSelectId ? b : a), {}),
     isModalShow: state.ordermanage.uiStatus.isUpdateShow,
     isLoading: state.ordermanage.uiStatus.isLoading,
+    roomnum: state.ordermanage.roomNum,
+    appoInfo: state.ordermanage.currentAppo,
 });
 
 const mapDispatchToProps = dispatch => ({

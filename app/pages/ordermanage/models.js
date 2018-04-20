@@ -1,18 +1,27 @@
 import { createReducers, createActions, request, sleep } from '../../utils/';
 import { combineReducers } from 'redux';
 import { APIHOST } from '../../config';
-
+import {
+    notification,
+    message
+} from 'antd';
 const urls = {
     get: APIHOST + 'appo/queryAppoInfo',
+    getRoom: APIHOST + 'room/queryRoomInfo',
     getManager: APIHOST + 'user/queryAllManager',
     changeAppoStatus: APIHOST + 'appo/changeAppoStatus',
+    changeRoomUserNum: APIHOST + 'room/changeRoomUserNum',
     del: APIHOST + 'booksdel',
-    update: APIHOST + 'booksupdate',
+    update: APIHOST + 'user/updateUserInfo',
     add: APIHOST + 'booksadd',
 };
 
 const path = name => `app/pages/ordermanage/${name}`;
-
+const successError = (type, msg) => {
+    notification[type]({
+        message: msg
+    });
+};
 const models = {
     list: {
         data: [],
@@ -27,9 +36,7 @@ const models = {
                 return state.filter(item => item.id !== action.payload);
             },
             update(state, action) {
-                console.log(state)
-                console.log(action.payload)
-                return state.map(item => (item.appoId == action.payload.appoId ? action.payload : item));
+                return state.map(item => (item.appoId === action.payload.appoId ? action.payload : item));
             },
         },
     },
@@ -91,6 +98,22 @@ const models = {
             },
         },
     },
+    roomNum: {
+        data: [],
+        handlers: {
+            getroomNum(state, action) {
+                return action.payload;
+            },
+        },
+    },
+    currentAppo: {
+        data: '',
+        handlers: {
+            changeCurrentAppo(state, action) {
+                return action.payload;
+            },
+        },
+    },
 };
 
 export const actions = createActions(models, path);
@@ -147,13 +170,45 @@ export const asyncDel = id => {
 };
 
 export const asyncUpdate = content => {
-    return async dispatch => {
+    return async (dispatch, getState) => {
         try {
+            let appoInfo = getState().ordermanage.currentAppo;
+            let familyAddress = (content.familyAddress).join('');
+            let roomOrder = content.roombed[0];
+            let bedId = content.roombed[1];
             dispatch(actions.changeUiStatus({ isLoading: true }));
-            // 下面的请求和结果返回需要根据接口来实现
-            let updateContent = await request(urls.update, 'POST', content);
-            await sleep(1000);
-            dispatch(actions.update(updateContent));
+            let result = await request(urls.update + '?body=' + encodeURIComponent(JSON.stringify({ 
+                uid: appoInfo.uid,
+                name: content.name,
+                userType: '2',
+                age: content.age,
+                sex: parseInt(content.sex),
+                roomOrder: roomOrder,
+                bedId: bedId,
+                familyName: content.familyName,
+                familyAddress: familyAddress,
+                familyPhone: content.familyPhone,
+                idCardNum: content.idCardNum,
+            })));
+            if (result.ok == 1) {
+                let roomres = await request(urls.changeRoomUserNum + '?body=' + encodeURIComponent(JSON.stringify({ roomOrder: roomOrder, inc: 1 }))); 
+                if (roomres.ok == 1) {
+                    let appores = await request(urls.changeAppoStatus + '?body=' + encodeURIComponent(JSON.stringify({
+                        appoId: appoInfo.appoId,
+                        email: appoInfo.email,
+                        status: appoInfo.status,
+                        emailStatus: appoInfo.emailStatus,
+                        bedId: bedId,
+                        roomOrder: roomOrder,
+                    })));
+                    dispatch(actions.update(appores.dbResult));
+                    successError('success', '操作已成功！');
+                } else {
+
+                }
+            } else {
+
+            }
         } catch (e) {
             throw e;
         } finally {
@@ -162,7 +217,7 @@ export const asyncUpdate = content => {
     };
 };
 
-export const asyncAdd = contents => {
+export const asyncAdd = (contents, appoInfo) => {
     return async dispatch => {
         try {
             dispatch(actions.changeUiStatus({ isLoading: true }));
@@ -215,6 +270,53 @@ export const asyncUpdateAppoStatus = param => {
                 status: param.status,
                 emailStatus: param.emailStatus })));
             dispatch(actions.update(result.dbResult));
+            successError('success', '操作已成功！');
+        } catch (e) {
+            throw e;
+        } finally {
+            dispatch(actions.changeUiStatus({ isLoading: false }));
+        }
+    };
+};
+
+// 房间
+export const asyncGetRoom = () => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch(actions.changeUiStatus({ isLoading: true }));
+            // 下面的请求和结果返回需要根据接口来实现
+            let result = await request(
+                urls.getRoom +
+                '?body=' +
+                encodeURIComponent(
+                    JSON.stringify({
+                        querys: {},
+                        sort: {},
+                        pagination: { current: 1, pageSize: 100 },
+                    }),
+                ),
+            );
+            let currentRoom = result.docs;
+            let room = [];
+            let roomitem = {};
+            for (let i = 0; i < currentRoom.length; i++) {
+                roomitem = {
+                    value: currentRoom[i].roomOrder,
+                    label: currentRoom[i].roomOrder,
+                    children: [],
+                };
+                let totalItem = {};
+                for (let j = 1; j < currentRoom[i].totalNum + 1; j++) {
+                    totalItem = {
+                        value: j,
+                        label: j + '号床',
+                    };
+                    roomitem.children.push(totalItem)
+                }
+                room.push(roomitem)
+            }
+            
+            dispatch(actions.getroomNum(room));
         } catch (e) {
             throw e;
         } finally {

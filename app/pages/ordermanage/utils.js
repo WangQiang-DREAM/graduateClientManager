@@ -50,6 +50,6 @@ export const formatFormData = values => {
 };
 
 export const formItemLayout = {
-    labelCol: { span: 4, offset: 2 },
+    labelCol: { span: 7, offset: 2 },
     wrapperCol: { span: 14 },
 };
