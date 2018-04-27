@@ -47,7 +47,7 @@ class List extends React.Component {
                     onChange={this.changeHandle}>
                     <Column
                         width={'25%'}
-                        title="管理员名称"
+                        title="管理员用户名"
                         dataIndex="username"
                         key="username"
                         sorter={false}

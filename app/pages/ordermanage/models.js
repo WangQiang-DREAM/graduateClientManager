@@ -53,7 +53,9 @@ const models = {
         },
     },
     searchValues: {
-        data: {},
+        data: {
+            
+        },
         handlers: {
             changeSearchValues(state, action) {
                 return action.payload;
@@ -107,9 +109,21 @@ const models = {
         },
     },
     currentAppo: {
-        data: '',
+        data: {},
         handlers: {
             changeCurrentAppo(state, action) {
+                return action.payload;
+            },
+        },
+    },
+    AppoNum: {
+        data: {
+            waitAppo: [],
+            currentAppo: [],
+            readyAppo: [],
+        },
+        handlers: {
+            getAppoNum(state, action) {
                 return action.payload;
             },
         },
@@ -143,9 +157,30 @@ export const asyncGet = () => {
             dispatch(actions.changeUiStatus({ isLoading: true }));
             // 下面的请求和结果返回需要根据接口来实现
             let result = await request(urls.get + formatGetParams(getState));
-            console.log(result)
             dispatch(actions.get(result.docs));
             dispatch(actions.changePagination(result.pagination));
+            // const allAppo = result.docs;
+            // const waitAppo = allAppo.filter(elem => {
+            //     if (elem.status === '0' && elem.receptionist === getState().user.info.name) {
+            //         return elem;
+            //     }
+            // });
+            // const currentAppo = allAppo.filter(elem => {
+            //     if (elem.status === '1' && elem.receptionist === getState().user.info.name) {
+            //         return elem;
+            //     }
+            // });
+            // const readyAppo = allAppo.filter(elem => {
+            //     if (elem.status === '2' && elem.receptionist === getState().user.info.name) {
+            //         return elem;
+            //     }
+            // });
+            // const appoNum = {
+            //     waitAppo: waitAppo,
+            //     currentAppo: currentAppo,
+            //     readyAppo: readyAppo,
+            // };
+            // dispatch(actions.getAppoNum(appoNum));
         } catch (e) {
             throw e;
         } finally {
@@ -153,6 +188,57 @@ export const asyncGet = () => {
         }
     };
 };
+
+export const asyncGetAppoNum = () => {
+    return async (dispatch, getState) => {
+        try {
+            dispatch(actions.changeUiStatus({ isLoading: true }));
+            // 下面的请求和结果返回需要根据接口来实现
+            let result = await request(
+                urls.get +
+                '?body=' +
+                encodeURIComponent(
+                    JSON.stringify({
+                        querys: {
+                            receptionist: getState().user.info.name,
+                        },
+                        sort: {
+                            
+                        },
+                        pagination: { current: 1, pageSize: 100 },
+                    }),
+                ),
+            );
+            const allAppo = result.docs;
+            const waitAppo = allAppo.filter(elem => {
+                if (elem.status === '0' && elem.receptionist === getState().user.info.name) {
+                    return elem;
+                }
+            });
+            const currentAppo = allAppo.filter(elem => {
+                if (elem.status === '1' && elem.receptionist === getState().user.info.name) {
+                    return elem;
+                }
+            });
+            const readyAppo = allAppo.filter(elem => {
+                if (elem.status === '2' && elem.receptionist === getState().user.info.name) {
+                    return elem;
+                }
+            });
+            const appoNum = {
+                waitAppo: waitAppo,
+                currentAppo: currentAppo,
+                readyAppo: readyAppo,
+            };
+            dispatch(actions.getAppoNum(appoNum));
+        } catch (e) {
+            throw e;
+        } finally {
+            dispatch(actions.changeUiStatus({ isLoading: false }));
+        }
+    };
+};
+
 
 export const asyncDel = id => {
     return async dispatch => {

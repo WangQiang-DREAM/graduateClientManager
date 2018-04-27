@@ -8,6 +8,7 @@ import {
     Row,
     Avatar,
     Tooltip,
+    Carousel
 } from 'antd';
 import {actions, asyncGet, asyncDel} from './models';
 import styles from './main.css';
@@ -330,7 +331,9 @@ class Main extends React.Component {
                                 }}
                                 bordered={false}
                                 title="XX 指数">
-                                <div className={styles.chart}></div>
+                                <div className={styles.chart}>
+                                   
+                                </div>
                             </Card>
                             <Card
                                 bodyStyle={{

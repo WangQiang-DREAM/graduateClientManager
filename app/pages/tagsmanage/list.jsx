@@ -74,7 +74,11 @@ class List extends React.Component {
                         dataIndex="name"
                         key="name"
                         render={text => {
-                            return formatViewData('name', text);
+                            if (text === null) {
+                                return (<span style={{ color: 'red' }}>暂无</span>)
+                            } else {
+                                return formatViewData('name', text);
+                            }
                         }}
                     />
                     <Column
@@ -95,7 +99,11 @@ class List extends React.Component {
                         dataIndex="sex"
                         key="sex"
                         render={text => {
-                            return formatViewData('sex', text);
+                            if (text !== null) {
+                                return formatViewData('sex', text);
+                            } else {
+                                return (<span style={{ color: 'red' }}>暂无</span>)
+                            } 
                         }}
                     />
                     <Column

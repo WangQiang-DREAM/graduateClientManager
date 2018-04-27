@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Spin, Popconfirm ,List, Card, Row, Col, Radio, Input, Button, Icon, Dropdown, Menu, Avatar } from 'antd';
-import { actions, asyncGet, asyncDel, asyncGetManager, asyncUpdateAppoStatus, asyncGetRoom } from './models';
+import { actions, asyncGet, asyncDel, asyncGetManager, asyncUpdateAppoStatus, asyncGetRoom, asyncGetAppoNum } from './models';
 import { formatViewData } from './utils';
 import styles from './list.css'
 import moment from 'moment';
@@ -10,7 +10,12 @@ const RadioGroup = Radio.Group;
 const { Search } = Input;
 class MList extends React.Component {
     componentDidMount() {
+        let values = {
+            receptionist: this.props.username,
+        };
+        this.props.changeSearchValues(values);
         this.props.asyncGet();
+        this.props.getAppoNum();
         this.props.getManager();
         this.props.getRoom()
     }
@@ -21,19 +26,24 @@ class MList extends React.Component {
             if (e.target.value === 'all') {
                 values = { 
                     name: currentSearch.name,
+                    receptionist: this.props.username,
                 };
             } else {
                 values = {
                     status: e.target.value,
                     name: currentSearch.name,
+                    receptionist: this.props.username,
                 }; 
             }
         } else {
             if (e.target.value === 'all') {
-                values = {};
+                values = {
+                    receptionist: this.props.username,
+                };
             } else {
                 values = {
                     status: e.target.value,
+                    receptionist: this.props.username,
                 };
             }
         }
@@ -56,7 +66,6 @@ class MList extends React.Component {
                 } else {
                     values = {
                         name: e,
-                        status: currentSearch.status,
                     };
                 }
             }
@@ -92,6 +101,8 @@ class MList extends React.Component {
             return (
                 <span style={{ color: 'red' }}>{formatViewData('status', status)}</span>
             )
+        }
+        if (status === '1') {
             return (
                 <span style={{ color: 'blue' }}>{formatViewData('status', status)}</span>
             )
@@ -102,7 +113,6 @@ class MList extends React.Component {
         }
     }
     buttonView = (appoId, status, email, uid) => {
-        [<Button size='small'>接受</Button>]
         if (status == '0') {
             return [
                 <Button type='primary' onClick={() => {
@@ -118,14 +128,32 @@ class MList extends React.Component {
                     <Button type="danger" >拒绝</Button>
                 </Popconfirm> ]
         } else if (status == '1') {
-            return [<Button type='primary' onClick={() => {
+            return [ <Button type='primary' onClick={() => {
                 this.checkIn(appoId, email, uid)
-            }}>入住</Button>, <Button onClick={() => {
-                this.nocheckIn(appoId, email)
-            }}>不入住</Button>]
+            }}>入住</Button>, <Popconfirm
+                            title="确定要放弃入住吗？"
+                            okText="确定"
+                            cancelText="取消"
+                            onConfirm={ () => {
+                                this.cancelEnter(appoId, email)
+                            }}>
+                            <Button type="danger" >取消</Button>
+                        </Popconfirm>
+                   ]
         } else {
             return [<a></a>]
         }
+    }
+    // 不入住
+    cancelEnter = (appoId, email) => {
+        let param = {
+            appoId: appoId,
+            email: email,
+            status: '2',
+            emailStatus: 'nocheckin',
+        };
+        this.props.updateAppoStatus(param);
+        this.props.getAppoNum();
     }
     // 拒绝
     rejectAppo = (appoId, email) => {
@@ -136,6 +164,7 @@ class MList extends React.Component {
             emailStatus: 'reject',
         };
         this.props.updateAppoStatus(param);
+        this.props.getAppoNum();
     }
 
     // 接受
@@ -147,6 +176,7 @@ class MList extends React.Component {
             emailStatus: 'receive',
         };
         this.props.updateAppoStatus(param);
+        this.props.getAppoNum();
     }
     // 入住
     checkIn = (appoId, email, uid) => {
@@ -159,17 +189,9 @@ class MList extends React.Component {
         };
         this.props.setCurrentAppo(param);
         this.props.editShow();
+        this.props.getAppoNum();
     }
-    // 不入住
-    nocheckIn = (appoId, email) => {
-        let param = {
-            appoId: appoId,
-            email: email,
-            status: '2',
-            emailStatus: 'nocheckin',
-        };
-        this.props.updateAppoStatus(param);
-    }
+    
     render() {
         // const list = [
         //     {
@@ -193,7 +215,7 @@ class MList extends React.Component {
         //         message: 13
         //     }
         // ]
-        const { isLoading, pagination, list} = this.props;
+        const { isLoading, pagination, list, AppoNum} = this.props;
         const paginationProps = {
             total: pagination.total,
             pageSize: pagination.pageSize,
@@ -229,13 +251,14 @@ class MList extends React.Component {
             <div className={styles.listContent}>
                 <div className={styles.listContentItem}>
                     <span>接待人</span>
-                    <p>{receptionist}</p>
+                    <p style={{color: '#222'}}>{receptionist}</p>
                 </div>
                 <div className={styles.listContentItem}>
                     <span>预约时间</span>
-                    <p>{moment(appoTime).format('YYYY-MM-DD HH:mm')}</p>
+                    <p style={{color: '#222'}}>{moment(appoTime).format('YYYY-MM-DD HH:mm')}</p>
                 </div>
                 <div className={styles.listContentItem}>
+                    <span>预约状态</span>
                     <p>{this.viewStatus(status)}</p>
                 </div>
             </div>
@@ -246,13 +269,13 @@ class MList extends React.Component {
                     <Card bordered={false}>
                         <Row>
                             <Col sm={8} xs={24}>
-                                <Info title="我的待办" value="8个任务" bordered />
+                                <Info title="我的待办" value={AppoNum.waitAppo.length + '个预约'} bordered />
                             </Col>
                             <Col sm={8} xs={24}>
-                                <Info title="本周任务平均处理时间" value="32分钟" bordered />
+                                <Info title="正在进行中" value={AppoNum.currentAppo.length + '个预约'} bordered />
                             </Col>
                             <Col sm={8} xs={24}>
-                                <Info title="本周完成任务数" value="24个任务" />
+                                <Info title="已结束" value={AppoNum.readyAppo.length + '个预约'} />
                             </Col>
                         </Row>
                     </Card>
@@ -296,6 +319,8 @@ const mapStateToProps = state => ({
     pagination: state.ordermanage.pagination,
     manager: state.ordermanage.manager,
     searchValue: state.ordermanage.searchValues,
+    AppoNum: state.ordermanage.AppoNum,
+    username: state.user.info.name,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -312,7 +337,8 @@ const mapDispatchToProps = dispatch => ({
     getManager: () =>dispatch(asyncGetManager()),
     updateAppoStatus: param => dispatch(asyncUpdateAppoStatus(param)),
     getRoom: () => dispatch(asyncGetRoom()),
-    setCurrentAppo: param => dispatch(actions.changeCurrentAppo(param))
+    setCurrentAppo: param => dispatch(actions.changeCurrentAppo(param)),
+    getAppoNum: () => dispatch(asyncGetAppoNum())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(MList);
