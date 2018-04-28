@@ -2,10 +2,12 @@
     width: 100%;
     height: 100%;
 }
-.mainCon{
-  display: block;
-  margin: 0 auto;
+
+.mainCon {
+    display: block;
+    margin: 0 auto;
 }
+
 .custom_image img {
     display: block;
 }
@@ -17,32 +19,35 @@
 .custom_card p {
     color: #999;
 }
+
 .personInfo {
     width: 100%;
     height: 130px;
     padding: 5px 25px;
 }
-.big_avatar{
-    width:75px;
+
+.big_avatar {
+    width: 75px;
     height: 75px;
     display: block;
     margin: 0 auto;
     border-radius: 50%;
     margin-top: 25px;
 }
-.perCol{
+
+.perCol {
     display: table-cell;
     vertical-align: middle;
 }
-.perCol p{
+
+.perCol p {
     margin-bottom: 8px;
 }
-.info{
+
+.info {
     font-size: 20px;
     color: #000;
 }
-
-
 
 .ant-card-meta-description {
     color: #999;
@@ -50,22 +55,24 @@
     line-height: 22px;
     overflow: hidden;
 }
+
 .cardTitle {
     font-size: 0;
 }
+
 .cardTitle a {
-        color: #999;
-        margin-left: 12px;
-        line-height: 24px;
-        height: 24px;
-        display: inline-block;
-        vertical-align: top;
-        font-size: 15px;  
-    }
+    color: #999;
+    margin-left: 12px;
+    line-height: 24px;
+    height: 24px;
+    display: inline-block;
+    vertical-align: top;
+    font-size: 15px;
+}
 
 .cardTitle a:hover {
-         color: #999;
-     }
+    color: #999;
+}
 
 .projectItemContent {
     display: flex;
@@ -74,60 +81,69 @@
     font-size: 12px;
     height: 20px;
     line-height: 20px;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
- .datetime {
-     color:rgba(0, 0, 0, 0.25);
-     flex: 0 0 auto;
-     font-size: 13px;
-     float: right;
- }
+
+.datetime {
+    color: rgba(0, 0, 0, 0.25);
+    flex: 0 0 auto;
+    font-size: 13px;
+    float: right;
+}
 
 .projectGrid {
     width: 50%;
 }
+
 .projectItemContent a {
     color: #999;
     display: inline-block;
     flex: 1 1 0;
-   
 }
- .projectItemContent a:hover {
-     color: #999;
- }
-.perCont{
+
+.projectItemContent a:hover {
+    color: #999;
+}
+
+.perCont {
     float: right;
     display: table;
     height: 100%;
 }
+
 .perColRight {
     white-space: nowrap;
     display: table-cell;
     vertical-align: middle;
     padding-right: 20px;
 }
+
 .statItem {
     padding: 0 32px;
     position: relative;
     display: inline-block;
 }
+
 .statItem>p:first-child {
     color: #999;
     font-size: 14px;
     line-height: 22px;
     margin-bottom: 4px;
 }
+
 .statItem>p {
     color: #999;
     font-size: 30px;
     line-height: 38px;
     margin: 0;
 }
+
 .statItem>p>span {
     color: #999;
     font-size: 20px;
 }
+
 .statItem:after {
     background-color: #999;
     position: absolute;
@@ -137,35 +153,54 @@
     height: 40px;
     content: '';
 }
+
 .statItem:last-child {
     padding-right: 0;
-   
 }
+
 .statItem:last-child:after {
-     display: none;
- }
- .activitiesList {
-     padding: 0 24px 8px 24px;
- }
- .username {
+    display: none;
+}
+
+.activitiesList {
+    padding: 0 24px 8px 24px;
+}
+
+.username {
     color: #666;
     font-size: 13px;
-    font-family: PingFangSC-Light,'helvetica neue',arial,'hiragino sans gb','microsoft yahei ui','microsoft yahei',simsun,sans-serif;
- }
+    font-family: PingFangSC-Light, 'helvetica neue', arial, 'hiragino sans gb', 'microsoft yahei ui', 'microsoft yahei', simsun, sans-serif;
+}
 
- .event {
-     font-weight: normal;
-     font-size: 13px;
-     font-family: PingFangSC-Light,'helvetica neue',arial,'hiragino sans gb','microsoft yahei ui','microsoft yahei',simsun,sans-serif;
- }
- .mapChart {
-     padding-top: 24px;
-     height: 457px;
-     text-align: center;
-   
- }
-   .mapChart img {
-       display: inline-block;
-       max-width: 100%;
-       max-height: 437px;
-   }
+.event {
+    font-weight: normal;
+    font-size: 13px;
+    font-family: PingFangSC-Light, 'helvetica neue', arial, 'hiragino sans gb', 'microsoft yahei ui', 'microsoft yahei', simsun, sans-serif;
+}
+
+.mapChart {
+    padding-top: 24px;
+    height: 437px;
+    text-align: center;
+}
+
+.mapChart img {
+    display: inline-block;
+    max-width: 100%;
+    max-height: 360px;
+}
+
+/* .basic {
+    width: 100%;
+    height: 437px;
+    max-width: 100%;
+    max-height: 437px;
+    background: url('http://localhost:8080/manager/basic.jpg') no-repeat center;
+    background-size: 100%;
+} */
+
+.chartbox {
+   max-width: 100%;
+   max-height: 500px;
+    height: 360px;
+}

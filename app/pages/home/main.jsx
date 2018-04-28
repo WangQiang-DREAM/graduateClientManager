@@ -1,220 +1,222 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {
-    List,
-    Spin,
-    Card,
-    Col,
-    Row,
-    Avatar,
-    Tooltip,
-    Carousel
-} from 'antd';
-import {actions, asyncGet, asyncDel} from './models';
+import {List, Spin, Card, Col, Row, Avatar, Tooltip, Carousel,ChartCard} from 'antd';
+import {actions, asyncGet, asyncDel, asyncGetLogs} from './models';
 import styles from './main.css';
 import moment from 'moment';
 import {Link} from 'react-router-dom';
 import NumberInfo from 'ant-design-pro/lib/NumberInfo';
 import numeral from 'numeral';
 
-class Main extends React.Component {
+import echarts from 'echarts/lib/echarts';
+import 'echarts/lib/chart/scatter';
+import 'echarts/lib/chart/effectScatter';
+// 引入提示框和标题组件
+import 'echarts/lib/component/tooltip';
+import 'echarts/lib/component/title';
+import 'echarts/lib/component/legend';
+import 'echarts/lib/component/calendar';
+
+class Main extends React.Component {  
     componentDidMount() {
-        this
-            .props
-            .asyncGet();
+        this.props.asyncGet();
+        this.props.getLogs();
+        this.showChart()
     }
+    getVirtulData = year =>{
+        year = year || '2017';
+        var date = +echarts.number.parseDate(year + '-01-01');
+        var end = +echarts.number.parseDate((+year + 1) + '-01-01');
+        var dayTime = 3600 * 24 * 1000;
+        var data = [];
+        for (var time = date; time < end; time += dayTime) {
+            data.push([
+                echarts.format.formatTime('yyyy-MM-dd', time),
+                Math.floor(Math.random() * 100 )
+            ]);
+        }
+        return data;
+    }
+    showChart = () => {
+        let myChart = echarts.init(document.getElementById('main'));
+        let data = this.getVirtulData(2016);
+        // 绘制图表
+        myChart.setOption({
+            backgroundColor: 'transparent',
+            title: {
+                top: 30,
+                text: '托老所上半年日预约数',
+                left: 'center',
+                textStyle: {
+                    color: '#666'
+                }
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                top: '30',
+                left: '100',
+                data: ['预约数', 'Top 12'],
+                textStyle: {
+                    color: '#999'
+                }
+            },
+            calendar: [{
+                top: 90,
+                left: 'center',
+                width: '100%',
+                height: 270,
+                range: ['2016-01-01', '2016-06-30'],
+                splitLine: {
+                    show: true,
+                    lineStyle: {
+                        color: '#444',
+                        width: 4,
+                        type: 'solid'
+                    }
+                },
+                yearLabel: {
+                    formatter: '{start}  1st',
+                    textStyle: {
+                        color: '#fff'
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        color: '#999',
+                        borderWidth: 1,
+                        borderColor: '#555'
+                    }
+                }
+            }],
+            series: [
+                {
+                    name: '预约数',
+                    type: 'scatter',
+                    coordinateSystem: 'calendar',
+                    data: data,
+                    symbolSize: function (val) {
+                        return val[1] / 5;
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: '#ddb926'
+                        }
+                    }
+                },
+                {
+                    name: 'Top 12',
+                    type: 'effectScatter',
+                    coordinateSystem: 'calendar',
+                    data: data.sort(function (a, b) {
+                        return b[1] - a[1];
+                    }).slice(0, 12),
+                    symbolSize: function (val) {
+                        return val[1] / 5;
+                    },
+                    showEffectOn: 'render',
+                    rippleEffect: {
+                        brushType: 'stroke'
+                    },
+                    hoverAnimation: true,
+                    itemStyle: {
+                        normal: {
+                            color: '#f4e925',
+                            shadowBlur: 5,
+                            shadowColor: '#999'
+                        }
+                    },
+                    zlevel: 1
+                }
+            ]
+        },true);
+    }
+
     viewHandler = id => {
-        this
-            .props
-            .viewShow();
-        this
-            .props
-            .changeCurrentSelectId(id);
+        this.props.viewShow();
+        this.props.changeCurrentSelectId(id);
     };
     editHandler = id => {
-        this
-            .props
-            .editShow();
-        this
-            .props
-            .changeCurrentSelectId(id);
+        this.props.editShow();
+        this.props.changeCurrentSelectId(id);
     };
     changeHandle = (pagination, filters, sorter) => {
-        this
-            .props
-            .changePagination(pagination);
-        this
-            .props
-            .changeSort({key: sorter.field, order: sorter.order});
-        this
-            .props
-            .asyncGet();
+        this.props.changePagination(pagination);
+        this.props.changeSort({key: sorter.field, order: sorter.order});
+        this.props.asyncGet();
     };
-
+    eventView = (status, name) => {
+        switch (status) {
+            case '1':
+                return (<span style={{ display: 'inline-block', paddingLeft: '5px' }}>接受了<span style={{ display: 'inline-block', padding: '0 5px', color: '#1890ff' }}>{name}</span><span>先生的预约</span></span>);
+                break;
+            case '2':
+                return (<span style={{ display: 'inline-block', paddingLeft: '5px' }}>拒绝了<span style={{ display: 'inline-block', padding: '0 5px', color: '#1890ff' }}>{name}</span><span>先生的预约</span></span>);
+                break;
+            case '3':
+                return (<span>为<span style={{ display: 'inline-block', padding: '0 5px', color: '#1890ff' }}>{name}</span><span>先生办理了入住手续</span></span>);
+                break;
+            case '4':
+                return (<span style={{ display: 'inline-block', paddingLeft: '5px' }}>结束了<span style={{ display: 'inline-block', padding: '0 5px', color: '#1890ff' }}>{name}</span><span>先生的预约</span></span>);
+                break;
+        };
+    };
     renderActivities = ()=> {
-        const list = [{
-                        id: 'trend-1',
-                        updatedAt: '2018-03-30T02:30:21.416Z',
-                        user: {
-                            name: '曲丽丽',
-                            avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png'
-                        },
-                        group: {
-                            name: '高逼格设计天团',
-                            link: 'http://github.com/'
-                        },
-                        project: {
-                            name: '六月迭代',
-                            link: 'http://github.com/'
-                        },
-                        template: '在 @{group} 新建项目 @{project}'
-                    },
-                    {
-                        id: 'trend-2',
-                        updatedAt: '2018-03-30T02:30:21.416Z',
-                        user: {
-                            name: '付小小',
-                            avatar: 'https://gw.alipayobjects.com/zos/rmsportal/cnrhVkzwxjPwAaCfPbdc.png'
-                        },
-                        group: {
-                            name: '高逼格设计天团',
-                            link: 'http://github.com/'
-                        },
-                        project: {
-                            name: '六月迭代',
-                            link: 'http://github.com/'
-                        },
-                        template: '在 @{group} 新建项目 @{project}'
-                    },
-                    {
-                        id: 'trend-3',
-                        updatedAt: '2018-03-30T02:30:21.416Z',
-                        user: {
-                            name: '林东东',
-                            avatar: 'https://gw.alipayobjects.com/zos/rmsportal/gaOngJwsRYRaVAuXXcmB.png'
-                        },
-                        group: {
-                            name: '中二少女团',
-                            link: 'http://github.com/'
-                        },
-                        project: {
-                            name: '六月迭代',
-                            link: 'http://github.com/'
-                        },
-                        template: '在 @{group} 新建项目 @{project}'
-                    },
-                    {
-                        id: 'trend-4',
-                        updatedAt: '2018-03-30T02:30:21.416Z',
-                        user: {
-                            name: '周星星',
-                            avatar: 'https://gw.alipayobjects.com/zos/rmsportal/WhxKECPNujWoWEFNdnJE.png'
-                        },
-                        project: {
-                            name: '5 月日常迭代',
-                            link: 'http://github.com/'
-                        },
-                        template: '将 @{project} 更新至已发布状态'
-                    },
-                    {
-                        id: 'trend-5',
-                        updatedAt: '2018-03-30T02:30:21.416Z',
-                        user: {
-                            name: '朱偏右',
-                            avatar: 'https://gw.alipayobjects.com/zos/rmsportal/ubnKSIfAJTxIgXOKlciN.png'
-                        },
-                        project: {
-                            name: '工程效能',
-                            link: 'http://github.com/'
-                        },
-                        comment: {
-                            name: '留言',
-                            link: 'http://github.com/'
-                        },
-                        template: '在 @{project} 发布了 @{comment}'
-                    },
-                    {
-                        id: 'trend-6',
-                        updatedAt: '2018-03-30T02:30:21.416Z',
-                        user: {
-                            name: '乐哥',
-                            avatar: 'https://gw.alipayobjects.com/zos/rmsportal/jZUIxmJycoymBprLOUbT.png'
-                        },
-                        group: {
-                            name: '程序员日常',
-                            link: 'http://github.com/'
-                        },
-                        project: {
-                            name: '品牌迭代',
-                            link: 'http://github.com/'
-                        },
-                        template: '在 @{group} 新建项目 @{project}'
-                    }
-                ];
-
+        const list = this.props.logsData;
         return list.map(item => {
-        const events = item.template.split(/@\{([^{}]*)\}/gi).map((key) => {
-            if (item[key]) {
-            return <a href={item[key].link} key={item[key].name}>{item[key].name}</a>;
-            }
-            return key;
+            return (
+                <List.Item key={item.uid}>
+                    <List.Item.Meta
+                        avatar={<Avatar src={item.operatorAvatar} />}
+                        title={
+                            <span>
+                                <a className={styles.username}>{item.operator}</a>
+                                &nbsp;
+                                <span className={styles.event}>{this.eventView(item.status, item.name)}</span>
+                            </span>
+                        }
+                        description={
+                            <span className={styles.datetime} title={item.operateTime}>
+                                {moment(item.operateTime).fromNow()}
+                            </span>
+                        }
+                    />
+                </List.Item>
+            );
         });
-        return (
-            <List.Item key={item.id}>
-            <List.Item.Meta
-                avatar={<Avatar src={item.user.avatar} />}
-                title={
-                <span>
-                    <a className={styles.username}>{item.user.name}</a>
-                    &nbsp;
-                    <span className={styles.event}>{events}</span>
-                </span>
-                }
-                description={
-                <span className={styles.datetime} title={item.updatedAt}>
-                    {moment(item.updatedAt).fromNow()}
-                </span>
-                }
-            />
-            </List.Item>
-        );
-        });
-  }
-
-
-
+    }
 
     render() {
         const {isLoading, list, pagination} = this.props;
         let h = parseInt(new Date().getHours());
         let regard = '';
         if (h < 11) {
-            regard = '早安'
+            regard = '早安';
         } else if (h > 13) {
-            regard = '下午好'
+            regard = '下午好';
         } else {
-            regard = '午安'
+            regard = '午安';
         }
-
         return (
             <div className={styles.mainBox}>
                 <div className={styles.personInfo}>
                     <Row style={{
-                        height: '100%'
+                        height: '100%',
                     }}>
                         <Col
                             span="17"
                             style={{
-                                height: '100%'
+                                height: '100%',
                             }}>
                             <Row
                                 style={{
-                                    height: '100%'
+                                    height: '100%',
                                 }}>
                                 <div
                                     style={{
                                         height: '100%',
-                                        float: 'left'
+                                        float: 'left',
                                     }}>
                                     <img className={styles.big_avatar} src={this.props.manager.photo}/>
                                 </div>
@@ -223,7 +225,7 @@ class Main extends React.Component {
                                         height: '100%',
                                         float: 'left',
                                         display: 'table',
-                                        marginLeft: '20px'
+                                        marginLeft: '20px',
                                     }}>
                                     <div className={styles.perCol}>
                                         <p className={styles.info}>{regard}，{this.props.manager.name}，祝你开心每一天！</p>
@@ -235,7 +237,7 @@ class Main extends React.Component {
                         <Col
                             span="7"
                             style={{
-                                height: '100%'
+                                height: '100%',
                             }}>
                             <div className={styles.perCont}>
                                 <div className={styles.perColRight}>
@@ -245,9 +247,7 @@ class Main extends React.Component {
                                     </div>
                                     <div className={styles.statItem}>
                                         <p>团队内排名</p>
-                                        <p>8<span>
-                                                / 24</span>
-                                        </p>
+                                        <p>8<span>/24</span></p>
                                     </div>
                                     <div className={styles.statItem}>
                                         <p>项目访问</p>
@@ -261,12 +261,14 @@ class Main extends React.Component {
                 <div
                     style={{
                         background: '#f0f2f5',
-                        padding: '25px'
+                        padding: '25px',
                     }}>
+                     
                     <Row gutter={24}>
                         <Col xl={16} lg={24} md={24} sm={24} xs={24}>
-                            <Card title="最新情况" bordered={false}
-                                style={{marginBottom:'24px'}}
+                         
+                            <Card title="居住情况" bordered={false}
+                                style={{marginBottom: '24px'}}
                             >
                                 <Row>
                                     <Col md={6} sm={12} xs={24}>
@@ -291,58 +293,25 @@ class Main extends React.Component {
                                     </Col>
                                 </Row>
                                 <div className={styles.mapChart}>
-                                    <Tooltip title="等待后期实现">
-                                        <img
-                                            src="https://gw.alipayobjects.com/zos/rmsportal/HBWnDEUXCnGnGrRfrpKa.png"
-                                            alt="map"
-                                        />
-                                    </Tooltip>
+                                    <div id='main' className={styles.chartbox}></div> 
                                 </div>
-                            </Card>
-                            <Card
-                                bodyStyle={{
-                                    padding: 0
-                                }}
-                                bordered={false}
-                                className={styles.activeCard}
-                                title="动态">
-
                             </Card>
                         </Col>
                         <Col xl={8} lg={24} md={24} sm={24} xs={24}>
                             <Card
                                 style={{
-                                    marginBottom: 24
+                                    marginBottom: 24,
                                 }}
                                 title="动态"
                                 bordered={false}
                                 bodyStyle={{
-                                    padding: 0
+                                    padding: 0,
                                 }}>
                                 <List size="large">
                                     <div className={styles.activitiesList}>
                                         {this.renderActivities()}
                                     </div>
                                 </List>                         
-                            </Card>
-                            <Card
-                                style={{
-                                    marginBottom: 24
-                                }}
-                                bordered={false}
-                                title="XX 指数">
-                                <div className={styles.chart}>
-                                   
-                                </div>
-                            </Card>
-                            <Card
-                                bodyStyle={{
-                                    paddingTop: 12,
-                                    paddingBottom: 12
-                                }}
-                                bordered={false}
-                                title="团队">
-                                <div className={styles.members}></div>
                             </Card>
                         </Col>
                     </Row>
@@ -352,7 +321,13 @@ class Main extends React.Component {
     }
 }
 
-const mapStateToProps = state => ({list: state.home.list, isLoading: state.home.uiStatus.isLoading, pagination: state.home.pagination, manager: state.user.info});
+const mapStateToProps = state => ({
+    list: state.home.list,
+    isLoading: state.home.uiStatus.isLoading,
+    pagination: state.home.pagination,
+    manager: state.user.info,
+    logsData: state.home.logsData,
+});
 
 const mapDispatchToProps = dispatch => ({
     asyncGet: () => dispatch(asyncGet()),
@@ -362,7 +337,8 @@ const mapDispatchToProps = dispatch => ({
     editShow: () => dispatch(actions.changeUiStatus({isUpdateShow: true})),
     changeCurrentSelectId: id => dispatch(actions.changeCurrentSelectId(id)),
     changePagination: pagination => dispatch(actions.changePagination(pagination)),
-    changeSort: data => dispatch(actions.changeSort(data))
+    changeSort: data => dispatch(actions.changeSort(data)),
+    getLogs:() => dispatch(asyncGetLogs())
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

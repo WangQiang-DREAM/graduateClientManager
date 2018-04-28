@@ -1,9 +1,19 @@
-import {createReducers, createActions, request, sleep} from '../../utils/';
-import {combineReducers} from 'redux';
-import {APIHOST} from '../../config';
+import {
+    createReducers,
+    createActions,
+    request,
+    sleep
+} from '../../utils/';
+import {
+    combineReducers
+} from 'redux';
+import {
+    APIHOST
+} from '../../config';
 
 const urls = {
     get: APIHOST + '',
+    getLogs: APIHOST + 'user/queryOperateLogs',
     del: APIHOST + 'booksdel',
     update: APIHOST + 'booksupdate',
     add: APIHOST + 'booksadd'
@@ -28,9 +38,9 @@ const models = {
                 return state.filter(item => item.id !== action.payload);
             },
             update(state, action) {
-                return state.map(item => (item.id === action.payload.id
-                    ? action.payload
-                    : item));
+                return state.map(item => (item.id === action.payload.id ?
+                    action.payload :
+                    item));
             }
         }
     },
@@ -89,6 +99,14 @@ const models = {
                 return action.payload;
             }
         }
+    },
+    logsData: {
+        data: [],
+        handlers: {
+            getLogsData(state, action) {
+                return action.payload;
+            }
+        }
     }
 };
 
@@ -114,32 +132,72 @@ const formatGetParams = getState => {
 };
 
 export const asyncGet = () => {
-    return async(dispatch, getState) => {
+    return async (dispatch, getState) => {
         try {
-            dispatch(actions.changeUiStatus({isLoading: true}));
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
             // 下面的请求和结果返回需要根据接口来实现
-            let result = await request(urls.get + formatGetParams(getState));
-            dispatch(actions.get(result.docs));
-            dispatch(actions.changePagination(result.pagination));
+            // let result = await request(urls.get + formatGetParams(getState));
+            // dispatch(actions.get(result.docs));
+            // dispatch(actions.changePagination(result.pagination));
         } catch (e) {
             throw e;
         } finally {
-            dispatch(actions.changeUiStatus({isLoading: false}));
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
         }
     };
 };
 
+export const asyncGetLogs = () => {
+    return async dispatch => {
+        try {
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
+            // 下面的请求和结果返回需要根据接口来实现
+            let result = await request(urls.getLogs + '?body=' + encodeURIComponent(JSON.stringify({
+                querys: {},
+                sort: {
+                    'key': 'operateTime',
+                    'order': 'descend',
+                },
+                pagination: {
+                    current: 1,
+                    pageSize: 6
+                },
+            })));
+            dispatch(actions.getLogsData(result.docs))
+        } catch (e) {
+            throw e;
+        } finally {
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
+        }
+    };
+};
+
+
 export const asyncDel = id => {
     return async dispatch => {
         try {
-            dispatch(actions.changeUiStatus({isLoading: true}));
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
             // 下面的请求和结果返回需要根据接口来实现
-            let result = await request(urls.del + '?body=' + encodeURIComponent(JSON.stringify({id: id})));
+            let result = await request(urls.del + '?body=' + encodeURIComponent(JSON.stringify({
+
+            })));
             dispatch(actions.del(result.id));
         } catch (e) {
             throw e;
         } finally {
-            dispatch(actions.changeUiStatus({isLoading: false}));
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
         }
     };
 };
@@ -147,7 +205,9 @@ export const asyncDel = id => {
 export const asyncUpdate = content => {
     return async dispatch => {
         try {
-            dispatch(actions.changeUiStatus({isLoading: true}));
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
             // 下面的请求和结果返回需要根据接口来实现
             let updateContent = await request(urls.update, 'POST', content);
             await sleep(1000);
@@ -155,7 +215,9 @@ export const asyncUpdate = content => {
         } catch (e) {
             throw e;
         } finally {
-            dispatch(actions.changeUiStatus({isLoading: false}));
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
         }
     };
 };
@@ -163,7 +225,9 @@ export const asyncUpdate = content => {
 export const asyncAdd = contents => {
     return async dispatch => {
         try {
-            dispatch(actions.changeUiStatus({isLoading: true}));
+            dispatch(actions.changeUiStatus({
+                isLoading: true
+            }));
             // 下面的请求和结果返回需要根据接口来实现
             let newContents = await request(urls.add, 'POST', contents);
             await sleep(1000);
@@ -171,7 +235,9 @@ export const asyncAdd = contents => {
         } catch (e) {
             throw e;
         } finally {
-            dispatch(actions.changeUiStatus({isLoading: false}));
+            dispatch(actions.changeUiStatus({
+                isLoading: false
+            }));
         }
     };
 };

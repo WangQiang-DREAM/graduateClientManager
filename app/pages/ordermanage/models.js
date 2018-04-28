@@ -14,6 +14,7 @@ const urls = {
     del: APIHOST + 'booksdel',
     update: APIHOST + 'user/updateUserInfo',
     add: APIHOST + 'booksadd',
+    addLogs: APIHOST + 'user/addLogs'
 };
 
 const path = name => `app/pages/ordermanage/${name}`;
@@ -159,28 +160,6 @@ export const asyncGet = () => {
             let result = await request(urls.get + formatGetParams(getState));
             dispatch(actions.get(result.docs));
             dispatch(actions.changePagination(result.pagination));
-            // const allAppo = result.docs;
-            // const waitAppo = allAppo.filter(elem => {
-            //     if (elem.status === '0' && elem.receptionist === getState().user.info.name) {
-            //         return elem;
-            //     }
-            // });
-            // const currentAppo = allAppo.filter(elem => {
-            //     if (elem.status === '1' && elem.receptionist === getState().user.info.name) {
-            //         return elem;
-            //     }
-            // });
-            // const readyAppo = allAppo.filter(elem => {
-            //     if (elem.status === '2' && elem.receptionist === getState().user.info.name) {
-            //         return elem;
-            //     }
-            // });
-            // const appoNum = {
-            //     waitAppo: waitAppo,
-            //     currentAppo: currentAppo,
-            //     readyAppo: readyAppo,
-            // };
-            // dispatch(actions.getAppoNum(appoNum));
         } catch (e) {
             throw e;
         } finally {
@@ -345,18 +324,36 @@ export const asyncGetManager = () => {
     };
 };
 
-export const asyncUpdateAppoStatus = param => {
+export const asyncUpdateAppoStatus = (param, logs) => {
     return async dispatch => {
         try {
             dispatch(actions.changeUiStatus({ isLoading: true }));
             // 下面的请求和结果返回需要根据接口来实现
-            let result = await request(urls.changeAppoStatus + '?body=' + encodeURIComponent(JSON.stringify({
-                appoId: param.appoId,
-                email: param.email,
-                status: param.status,
-                emailStatus: param.emailStatus })));
-            dispatch(actions.update(result.dbResult));
-            successError('success', '操作已成功！');
+            if (param == '1') {
+                let res = request(urls.addLogs + '?body=' + encodeURIComponent(JSON.stringify({
+                    name: logs.name,
+                    uid: logs.uid,
+                    status: logs.status,
+                    operator: logs.operator,
+                    operatorAvatar: logs.operatorAvatar
+                })));
+            } else {
+                let result = await request(urls.changeAppoStatus + '?body=' + encodeURIComponent(JSON.stringify({
+                    appoId: param.appoId,
+                    email: param.email,
+                    status: param.status,
+                    emailStatus: param.emailStatus
+                })));
+                dispatch(actions.update(result.dbResult));
+                successError('success', '操作已成功！');
+                let res = request(urls.addLogs + '?body=' + encodeURIComponent(JSON.stringify({
+                    name: logs.name,
+                    uid: logs.uid,
+                    status: logs.status,
+                    operator: logs.operator,
+                    operatorAvatar: logs.operatorAvatar
+                })));
+            }     
         } catch (e) {
             throw e;
         } finally {

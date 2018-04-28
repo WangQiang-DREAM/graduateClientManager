@@ -112,30 +112,30 @@ class MList extends React.Component {
             )
         }
     }
-    buttonView = (appoId, status, email, uid) => {
+    buttonView = (appoId, status, email, uid, name) => {
         if (status == '0') {
             return [
                 <Button type='primary' onClick={() => {
-                    this.receiveAppo(appoId, email)
+                    this.receiveAppo(appoId, email ,uid,name)
                 }}>接受</Button>,
                 <Popconfirm
                     title="确定要拒绝预约吗？"
                     okText="确定"
                     cancelText="取消"
                     onConfirm={() => {
-                        this.rejectAppo(appoId, email)
+                        this.rejectAppo(appoId, email,uid, name)
                     }}>
                     <Button type="danger" >拒绝</Button>
                 </Popconfirm> ]
         } else if (status == '1') {
             return [ <Button type='primary' onClick={() => {
-                this.checkIn(appoId, email, uid)
+                this.checkIn(appoId, email, uid, name)
             }}>入住</Button>, <Popconfirm
                             title="确定要放弃入住吗？"
                             okText="确定"
                             cancelText="取消"
                             onConfirm={ () => {
-                                this.cancelEnter(appoId, email)
+                                this.cancelEnter(appoId, email,uid, name)
                             }}>
                             <Button type="danger" >取消</Button>
                         </Popconfirm>
@@ -145,41 +145,63 @@ class MList extends React.Component {
         }
     }
     // 不入住
-    cancelEnter = (appoId, email) => {
+    cancelEnter = (appoId, email,uid,name) => {
         let param = {
             appoId: appoId,
             email: email,
             status: '2',
             emailStatus: 'nocheckin',
         };
-        this.props.updateAppoStatus(param);
+        let logs = {
+            name: name,
+            uid: uid,
+            status: '4',
+            operator: this.props.username,
+            operatorAvatar: this.props.useravatar,
+        };
+        this.props.updateAppoStatus(param, logs);
         this.props.getAppoNum();
     }
     // 拒绝
-    rejectAppo = (appoId, email) => {
+    rejectAppo = (appoId, email, uid, name) => {
         let param = {
             appoId: appoId,
             email: email,
             status: '2',
             emailStatus: 'reject',
         };
-        this.props.updateAppoStatus(param);
+        let logs = {
+            name: name,
+            uid: uid,
+            status: '2',
+            operator: this.props.username,
+            operatorAvatar: this.props.useravatar,
+        };
+        this.props.updateAppoStatus(param, logs);
         this.props.getAppoNum();
     }
 
     // 接受
-    receiveAppo = (appoId, email) => {
+    receiveAppo = (appoId, email, uid, name) => {
         let param = {
             appoId: appoId,
             email: email,
             status: '1',
             emailStatus: 'receive',
+
         };
-        this.props.updateAppoStatus(param);
+        let logs = {
+            name: name,
+            uid: uid,
+            status: '1',
+            operator: this.props.username,
+            operatorAvatar: this.props.useravatar,
+        }
+        this.props.updateAppoStatus(param, logs);
         this.props.getAppoNum();
     }
     // 入住
-    checkIn = (appoId, email, uid) => {
+    checkIn = (appoId, email, uid, name) => {
         let param = {
             appoId: appoId,
             email: email,
@@ -187,34 +209,21 @@ class MList extends React.Component {
             emailStatus: 'checkin',
             uid: uid,
         };
-        this.props.setCurrentAppo(param);
+        let logs = {
+            name: name,
+            uid: uid,
+            status: '3',
+            operator: this.props.username,
+            operatorAvatar: this.props.useravatar,
+        }
+        this.props.setCurrentAppo(param); 
         this.props.editShow();
         this.props.getAppoNum();
+        let a = '1';
+        this.props.updateAppoStatus(a, logs);
     }
     
     render() {
-        // const list = [
-        //     {
-        //         id: "fake-list-0",
-        //         owner: "付小小",
-        //         title: "Alipay",
-        //         avatar: "https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png",
-        //         cover: "https://gw.alipayobjects.com/zos/rmsportal/uMfMFlvUuceEyPpotzlq.png",
-        //         status: "active",
-        //         percent: 99,
-        //         logo: "https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png",
-        //         href: "https://ant.design",
-        //         updatedAt: "2018-04-19T02:14:27.425Z",
-        //         createdAt: "2018-04-19T02:14:27.425Z",
-        //         subDescription: "那是一种内在的东西， 他们到达不了，也无法触及的",
-        //         description: "在中台产品的研发过程中，会出现不同的设计规范和实现方式，但其中往往存在很多类似的页面和组件，这些类似的组件会被抽离成一套标准规范。",
-        //         activeUser: 194418,
-        //         newUser: 1251,
-        //         star: 174,
-        //         like: 158,
-        //         message: 13
-        //     }
-        // ]
         const { isLoading, pagination, list, AppoNum} = this.props;
         const paginationProps = {
             total: pagination.total,
@@ -295,7 +304,7 @@ class MList extends React.Component {
                             dataSource={list}
                             renderItem={item => (
                                 <List.Item
-                                    actions={this.buttonView(item.appoId, item.status, item.email, item.uid)}
+                                    actions={this.buttonView(item.appoId, item.status, item.email, item.uid, item.name)}
                                 >
                                     <List.Item.Meta
                                         avatar={<Avatar src={item.avatar} shape="square" size="large" />}
@@ -321,6 +330,7 @@ const mapStateToProps = state => ({
     searchValue: state.ordermanage.searchValues,
     AppoNum: state.ordermanage.AppoNum,
     username: state.user.info.name,
+    useravatar: state.user.info.photo,
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -335,7 +345,7 @@ const mapDispatchToProps = dispatch => ({
     changeSearchValues: params => dispatch(actions.changeSearchValues(params)),
     resetPagination: () => dispatch(actions.changePagination({ current: 1, pageSize: 10 })),
     getManager: () =>dispatch(asyncGetManager()),
-    updateAppoStatus: param => dispatch(asyncUpdateAppoStatus(param)),
+    updateAppoStatus: (param,logs) => dispatch(asyncUpdateAppoStatus(param,logs)),
     getRoom: () => dispatch(asyncGetRoom()),
     setCurrentAppo: param => dispatch(actions.changeCurrentAppo(param)),
     getAppoNum: () => dispatch(asyncGetAppoNum())
