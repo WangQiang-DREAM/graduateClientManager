@@ -1,10 +1,7 @@
 import { createReducers, createActions, request, sleep } from '../../utils/';
 import { combineReducers } from 'redux';
 import { APIHOST } from '../../config';
-import {
-    notification,
-    message
-} from 'antd';
+import { notification, message } from 'antd';
 const urls = {
     get: APIHOST + 'appo/queryAppoInfo',
     getRoom: APIHOST + 'room/queryRoomInfo',
@@ -330,28 +327,29 @@ export const asyncUpdateAppoStatus = (param, logs) => {
             dispatch(actions.changeUiStatus({ isLoading: true }));
             // 下面的请求和结果返回需要根据接口来实现
             if (param == '1') {
-                let res = request(urls.addLogs + '?body=' + encodeURIComponent(JSON.stringify({
+                let res = await request(urls.addLogs + '?body=' + encodeURIComponent(JSON.stringify({
                     name: logs.name,
                     uid: logs.uid,
                     status: logs.status,
                     operator: logs.operator,
-                    operatorAvatar: logs.operatorAvatar
+                    operatorAvatar: logs.operatorAvatar,
                 })));
             } else {
                 let result = await request(urls.changeAppoStatus + '?body=' + encodeURIComponent(JSON.stringify({
                     appoId: param.appoId,
                     email: param.email,
                     status: param.status,
-                    emailStatus: param.emailStatus
+                    emailStatus: param.emailStatus,
+                    phone: param.phone,
                 })));
                 dispatch(actions.update(result.dbResult));
                 successError('success', '操作已成功！');
-                let res = request(urls.addLogs + '?body=' + encodeURIComponent(JSON.stringify({
+                let res = await request(urls.addLogs + '?body=' + encodeURIComponent(JSON.stringify({
                     name: logs.name,
                     uid: logs.uid,
                     status: logs.status,
                     operator: logs.operator,
-                    operatorAvatar: logs.operatorAvatar
+                    operatorAvatar: logs.operatorAvatar,
                 })));
             }     
         } catch (e) {
@@ -382,23 +380,22 @@ export const asyncGetRoom = () => {
             let currentRoom = result.docs;
             let room = [];
             let roomitem = {};
-            for (let i = 0; i < currentRoom.length; i++) {
+            for (let i = 0, len = currentRoom.length; i < len; i++) {
                 roomitem = {
                     value: currentRoom[i].roomOrder,
                     label: currentRoom[i].roomOrder,
                     children: [],
                 };
                 let totalItem = {};
-                for (let j = 1; j < currentRoom[i].totalNum + 1; j++) {
+                for (let j = 1, leng = currentRoom[i].totalNum + 1; j < leng; j++) {
                     totalItem = {
                         value: j,
                         label: j + '号床',
                     };
-                    roomitem.children.push(totalItem)
+                    roomitem.children.push(totalItem);
                 }
-                room.push(roomitem)
+                room.push(roomitem);
             }
-            
             dispatch(actions.getroomNum(room));
         } catch (e) {
             throw e;

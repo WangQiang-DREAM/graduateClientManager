@@ -267,7 +267,7 @@ class Main extends React.Component {
                     <Row gutter={24}>
                         <Col xl={16} lg={24} md={24} sm={24} xs={24}>
                          
-                            <Card title="居住情况" bordered={false}
+                            <Card title="预约统计" bordered={false}
                                 style={{marginBottom: '24px'}}
                             >
                                 <Row>
@@ -302,7 +302,7 @@ class Main extends React.Component {
                                 style={{
                                     marginBottom: 24,
                                 }}
-                                title="动态"
+                                title="预约动态"
                                 bordered={false}
                                 bodyStyle={{
                                     padding: 0,

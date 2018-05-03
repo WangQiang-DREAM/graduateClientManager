@@ -54,7 +54,7 @@ class Comp extends React.Component {
                         onClick={this.handleClick}
                     >
                         <SubMenu title={<span> <span className={styles.remark}>
-                            <Badge count={5} style={{paddingRight: '10px'}}>
+                            <Badge count={0} style={{paddingRight: '10px'}}>
                                 <a href="" className={styles.head}>
                                     <img src={props.photo} className={styles.avatar} />
                                 </a>

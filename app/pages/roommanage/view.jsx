@@ -26,7 +26,7 @@ class View extends React.Component {
         if (info.file.status == 'uploading') {
             let roomOrder = this.props.roomDetail.roomOrder;
             this.props.getRoomImg(roomOrder);
-        }  
+        };  
     }
     removeByValue(arr, val) {
         for (let i = 0; i < arr.length; i++) {
@@ -37,7 +37,6 @@ class View extends React.Component {
         }
         return arr; 
     }
-  
     removeImg = file => {
         let oldimgurl = this.props.roomDetail.image;
         let newurl = this.removeByValue(oldimgurl, file.url);
@@ -83,16 +82,16 @@ class View extends React.Component {
         if (roomDetail.image !== null) {
             roomimg = roomDetail.image;
             let imgItem = {};
-            for (let i = 0; i < roomimg.length; i++) {
+            for (let i = 0, item; item = roomimg[i++];) {
                 imgItem = {
-                    uid: -(i + 1),
+                    uid: -i,
                     name: i + '.png',
                     status: 'done',
-                    url: roomimg[i],
+                    url: item,
                 };
                 imgList.push(imgItem);
             }
-        } 
+        }; 
         const props = {
             action: 'http://localhost:3300/room/upload',
             listType: 'picture-card',

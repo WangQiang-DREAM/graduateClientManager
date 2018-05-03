@@ -337,13 +337,14 @@ export const asyncAdd = contents => {
             let result = await request(urls.add + '?body=' + encodeURIComponent(JSON.stringify({
                 roomOrder: contents[0].roomOrder,
                 direction: contents[0].direction,
-                status: contents[0].status,
                 totalNum: contents[0].totalNum,
+                area: contents[0].area,
                 creator: getState().user.info.name,
             })));
             if ( result.code == 0) {
                 dispatch(actions.add(result.addNew));
                 successError('success', '添加成功！');
+               
             } else {
                 successError('error', result.msg);
             }      
@@ -407,7 +408,6 @@ export const asyncGetRoomComments = roomOrder => {
                     }),
                 ),
             );
-            console.log(result);
             if (result.docs) {
                 dispatch(actions.getRoomComments(result.docs));
             } else {

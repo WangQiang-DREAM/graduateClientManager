@@ -1,10 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Table, Spin, Popconfirm, Button} from 'antd';
+import {Table, Spin, Popconfirm, notification, Button} from 'antd';
 const { Column } = Table;
 import { actions, asyncGet, asyncUpdate, asyncGetRoomDetail, asyncGetRoomImgDetail, asyncGetRoomComments} from './models';
 import { formatViewData } from './utils';
 import styles from './list.css';
+
+const successError = (type, msg) => {
+    notification[type]({message: msg});
+};
 class List extends React.Component {
     componentDidMount() {
         this.props.asyncGet();
@@ -29,14 +33,18 @@ class List extends React.Component {
             status: '1',
             roomOrder: roomOrder,
         };
-        this.props.updateStatus(content)
-    }
-    onLine = roomOrder => {
-        let content = {
-            status: '0',
-            roomOrder: roomOrder,
-        };
         this.props.updateStatus(content);
+    }
+    onLine = (roomOrder, image) => {
+        if (image == undefined) {
+            successError('warning', '请将房间图片补充完整才可上线！');
+        } else {
+            let content = {
+                status: '0',
+                roomOrder: roomOrder,
+            };
+            this.props.updateStatus(content);
+        };   
     }
     renderAction = (text, record) => {
         if ( record.status == '0') {
@@ -55,7 +63,7 @@ class List extends React.Component {
                         okText="确定"
                         cancelText="取消"
                         onConfirm={() => {
-                            this.offLine(record.roomOrder)
+                            this.offLine(record.roomOrder);
                         }}>
                         <Button type="danger" size="small" >下线</Button>
                     </Popconfirm>
@@ -77,7 +85,7 @@ class List extends React.Component {
                         okText="确定"
                         cancelText="取消"
                         onConfirm={() => {
-                            this.onLine(record.roomOrder)
+                            this.onLine(record.roomOrder, record.image)
                         }}>
                         <button className={styles.success}>上线</button>
                     </Popconfirm> 
@@ -97,7 +105,7 @@ class List extends React.Component {
                     rowKey="roomOrder"
                     onChange={this.changeHandle}>
                     <Column
-                        title="房间编号"
+                        title="房间号"
                         dataIndex="roomOrder"
                         key="roomOrder"
                         render={text => {
@@ -106,7 +114,7 @@ class List extends React.Component {
                     />
 
                     <Column
-                        title="窗户方位"
+                        title="方位"
                         dataIndex="direction"
                         key="direction"
                         render={text => {
@@ -114,7 +122,7 @@ class List extends React.Component {
                         }}
                     />
                     <Column
-                        title="总床位数"
+                        title="床位数"
                         dataIndex="totalNum"
                         key="totalNum"
                         sorter={true}
@@ -130,6 +138,15 @@ class List extends React.Component {
                         key="userNum"
                         render={text => {
                             return formatViewData('userNum', text);
+                        }}
+                    />
+                    <Column
+                        title="面积"
+                        dataIndex="area"
+                        sorter={true}
+                        key="area"
+                        render={text => {
+                            return formatViewData('area', text);
                         }}
                     />
                     <Column

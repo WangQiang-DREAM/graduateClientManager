@@ -70,6 +70,7 @@ class ADD extends React.Component {
                     <Col span={20}>
                         <FormItem {...formItemLayout} label="房间状态">
                             {getFieldDecorator('status', {
+                                initialValue: '下线',
                                 rules: [
                                     {
                                         required: true,
@@ -77,9 +78,9 @@ class ADD extends React.Component {
                                     },
                                 ],
                             })(
-                                <Select placeholder="请选择">
+                                <Select placeholder="请选择" disabled>
                                     <Option value="0">在线</Option>
-                                    <Option value="1">已下线</Option>
+                                    <Option value="1">下线</Option>
                                 </Select>
                             )}
                         </FormItem>
@@ -98,9 +99,18 @@ class ADD extends React.Component {
                             })(<InputNumber placeholder="请填写/整数" style={{ width: '100%' }} />)}
                         </FormItem>
                     </Col>
-
-                    <Col span={24}>
-                       
+                    <Col span={20}>
+                        <FormItem {...formItemLayout} label="房间面积">
+                            {getFieldDecorator('area', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        type: 'integer',
+                                        message: '面积为整数',
+                                    },
+                                ],
+                            })(<InputNumber placeholder="请填写/整数" style={{ width: '100%' }} />)}
+                        </FormItem>
                     </Col>
 
                 </Row>

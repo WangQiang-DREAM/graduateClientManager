@@ -56,8 +56,8 @@ class MList extends React.Component {
         let manager = this.props.manager;
         let values = {};
         if (currentSearch.status !== undefined) { 
-            for (let i = 0; i < manager.length; i++) {
-                if (manager[i].name === e) {
+            for (let i = 0, item; item = manager[i++];) {
+                if (item.name === e) {
                     values = {
                         receptionist: e,
                         status: currentSearch.status,
@@ -70,8 +70,8 @@ class MList extends React.Component {
                 }
             }
         } else {
-            for (let i = 0; i < manager.length; i++) {
-                if (manager[i].name === e) {
+            for (let i = 0, item; item = manager[i++];) {
+                if (item.name === e) {
                     values = {
                         receptionist: e,
                     };
@@ -112,30 +112,30 @@ class MList extends React.Component {
             )
         }
     }
-    buttonView = (appoId, status, email, uid, name) => {
-        if (status == '0') {
+    buttonView = item => {
+        if (item.status === '0') {
             return [
                 <Button type='primary' onClick={() => {
-                    this.receiveAppo(appoId, email ,uid,name)
+                    this.receiveAppo(item)
                 }}>接受</Button>,
                 <Popconfirm
                     title="确定要拒绝预约吗？"
                     okText="确定"
                     cancelText="取消"
                     onConfirm={() => {
-                        this.rejectAppo(appoId, email,uid, name)
+                        this.rejectAppo(item)
                     }}>
                     <Button type="danger" >拒绝</Button>
                 </Popconfirm> ]
-        } else if (status == '1') {
+        } else if (item.status === '1') {
             return [ <Button type='primary' onClick={() => {
-                this.checkIn(appoId, email, uid, name)
+                this.checkIn(item)
             }}>入住</Button>, <Popconfirm
                             title="确定要放弃入住吗？"
                             okText="确定"
                             cancelText="取消"
                             onConfirm={ () => {
-                                this.cancelEnter(appoId, email,uid, name)
+                                this.cancelEnter(item)
                             }}>
                             <Button type="danger" >取消</Button>
                         </Popconfirm>
@@ -144,17 +144,18 @@ class MList extends React.Component {
             return [<a></a>]
         }
     }
-    // 不入住
-    cancelEnter = (appoId, email,uid,name) => {
+    // 取消
+    cancelEnter = item => {
         let param = {
-            appoId: appoId,
-            email: email,
+            appoId: item.appoId,
+            email: item.email,
+            phone: item.contactWay,
             status: '2',
             emailStatus: 'nocheckin',
         };
         let logs = {
-            name: name,
-            uid: uid,
+            name: item.name,
+            uid: item.uid,
             status: '4',
             operator: this.props.username,
             operatorAvatar: this.props.useravatar,
@@ -163,16 +164,17 @@ class MList extends React.Component {
         this.props.getAppoNum();
     }
     // 拒绝
-    rejectAppo = (appoId, email, uid, name) => {
+    rejectAppo = item => {
         let param = {
             appoId: appoId,
             email: email,
             status: '2',
             emailStatus: 'reject',
+            phone: item.contactWay,
         };
         let logs = {
-            name: name,
-            uid: uid,
+            name: item.name,
+            uid: item.uid,
             status: '2',
             operator: this.props.username,
             operatorAvatar: this.props.useravatar,
@@ -182,17 +184,17 @@ class MList extends React.Component {
     }
 
     // 接受
-    receiveAppo = (appoId, email, uid, name) => {
+    receiveAppo = item => {
         let param = {
-            appoId: appoId,
-            email: email,
+            appoId: item.appoId,
+            email: item.email,
             status: '1',
+            phone: item.contactWay,
             emailStatus: 'receive',
-
         };
         let logs = {
-            name: name,
-            uid: uid,
+            name: item.name,
+            uid: item.uid,
             status: '1',
             operator: this.props.username,
             operatorAvatar: this.props.useravatar,
@@ -201,17 +203,18 @@ class MList extends React.Component {
         this.props.getAppoNum();
     }
     // 入住
-    checkIn = (appoId, email, uid, name) => {
+    checkIn = item => {
         let param = {
-            appoId: appoId,
-            email: email,
+            appoId: item.appoId,
+            email: item.email,
             status: '2',
+            phone: item.contactWay,
             emailStatus: 'checkin',
-            uid: uid,
+            uid: item.uid,
         };
         let logs = {
-            name: name,
-            uid: uid,
+            name: item.name,
+            uid: item.uid,
             status: '3',
             operator: this.props.username,
             operatorAvatar: this.props.useravatar,
@@ -238,7 +241,6 @@ class MList extends React.Component {
                 {bordered && <em />}
             </div>
         );
-
         const extraContent = (
             <div className={styles.extraContent}>
                 <RadioGroup defaultValue="all" onChange={this.viewStatusChange}>
@@ -256,11 +258,11 @@ class MList extends React.Component {
                 />
             </div>
         );
-        const ListContent = ({ data: { receptionist, appoTime, status} }) => (
+        const ListContent = ({ data: { roomOrder, appoTime, status} }) => (
             <div className={styles.listContent}>
                 <div className={styles.listContentItem}>
-                    <span>接待人</span>
-                    <p style={{color: '#222'}}>{receptionist}</p>
+                    <span>预约房间</span>
+                    <p style={{color: '#222'}}>{roomOrder}</p>
                 </div>
                 <div className={styles.listContentItem}>
                     <span>预约时间</span>
@@ -288,7 +290,6 @@ class MList extends React.Component {
                             </Col>
                         </Row>
                     </Card>
-
                     <Card
                         className={styles.listCard}
                         bordered={false}
@@ -304,7 +305,7 @@ class MList extends React.Component {
                             dataSource={list}
                             renderItem={item => (
                                 <List.Item
-                                    actions={this.buttonView(item.appoId, item.status, item.email, item.uid, item.name)}
+                                    actions={this.buttonView(item)}
                                 >
                                     <List.Item.Meta
                                         avatar={<Avatar src={item.avatar} shape="square" size="large" />}
