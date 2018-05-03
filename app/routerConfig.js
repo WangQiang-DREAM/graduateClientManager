@@ -1,9 +1,8 @@
-import Videotag from './pages/videotag/';
+
 import Tagsmanage from './pages/tagsmanage/';
 import Home from './pages/home/';
 import Login from './pages/login/';
 import Usermanage from './pages/usermanage/';
-import Videohandle from './pages/videohandle/';
 import Roommanage from './pages/roommanage/';
 import Ordermanage from './pages/ordermanage/';
 
