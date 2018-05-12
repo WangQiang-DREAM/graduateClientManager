@@ -283,7 +283,7 @@ class MList extends React.Component {
                                 <Info title="我的待办" value={AppoNum.waitAppo.length + '个预约'} bordered />
                             </Col>
                             <Col sm={8} xs={24}>
-                                <Info title="正在进行中" value={AppoNum.currentAppo.length + '个预约'} bordered />
+                                <Info title="正在进行" value={AppoNum.currentAppo.length + '个预约'} bordered />
                             </Col>
                             <Col sm={8} xs={24}>
                                 <Info title="已结束" value={AppoNum.readyAppo.length + '个预约'} />

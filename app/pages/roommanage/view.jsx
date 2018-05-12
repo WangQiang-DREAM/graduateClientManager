@@ -49,7 +49,7 @@ class View extends React.Component {
             return (
                 <List.Item key={item.commentId}>
                     <List.Item.Meta
-                        avatar={<Avatar src={'http://localhost:8080/manager/avatar2.jpeg'} />}
+                        avatar={<Avatar src={'http:////123.207.163.226:3300/img/user/default.jpg'} />}
                         title={
                             <div>
                                 <span>
@@ -93,7 +93,7 @@ class View extends React.Component {
             }
         }; 
         const props = {
-            action: 'http://localhost:3300/room/upload',
+            action: 'http://123.207.164.37:3300/room/upload',
             listType: 'picture-card',
             fileList: imgList,
             data: {

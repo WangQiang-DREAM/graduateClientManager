@@ -243,15 +243,15 @@ class Main extends React.Component {
                                 <div className={styles.perColRight}>
                                     <div className={styles.statItem}>
                                         <p>项目数</p>
-                                        <p>56</p>
+                                        <p>1</p>
                                     </div>
                                     <div className={styles.statItem}>
                                         <p>团队内排名</p>
-                                        <p>8<span>/24</span></p>
+                                        <p>1<span>/2</span></p>
                                     </div>
                                     <div className={styles.statItem}>
-                                        <p>项目访问</p>
-                                        <p>2,223</p>
+                                        <p>本月任务数</p>
+                                        <p>23</p>
                                     </div>
                                 </div>
                             </div>
@@ -271,26 +271,19 @@ class Main extends React.Component {
                                 style={{marginBottom: '24px'}}
                             >
                                 <Row>
-                                    <Col md={6} sm={12} xs={24}>
+                                    <Col md={8} sm={12} xs={24}>
                                         <NumberInfo
-                                            subTitle="今日交易总额"
-                                            suffix="元"
-                                            total={numeral(124543233).format('0,0')}
+                                            subTitle="上半年预约总数"
+                                            total="7200"
                                         />
                                     </Col>
-                                    <Col md={6} sm={12} xs={24}>
-                                        <NumberInfo subTitle="销售目标完成率" total="92%" />
+                                    <Col md={8} sm={12} xs={24}>
+                                        <NumberInfo subTitle="日均预约数" total="40" />
                                     </Col>
-                                    <Col md={6} sm={12} xs={24}>
-                                        <NumberInfo subTitle="活动剩余时间"/>
+                                    <Col md={8} sm={12} xs={24}>
+                                        <NumberInfo subTitle="入住转化率" total="30%" />
                                     </Col>
-                                    <Col md={6} sm={12} xs={24}>
-                                        <NumberInfo
-                                            subTitle="每秒交易总额"
-                                            suffix="元"
-                                            total={numeral(234).format('0,0')}
-                                        />
-                                    </Col>
+                                    
                                 </Row>
                                 <div className={styles.mapChart}>
                                     <div id='main' className={styles.chartbox}></div> 

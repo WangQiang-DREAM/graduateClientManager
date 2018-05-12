@@ -1,11 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Modal, Row, Col, Spin, Form, Button } from 'antd';
-
 import { InputNumber, Input, DatePicker } from 'antd';
-
 import moment from 'moment';
-
 import { actions, asyncAdd } from './models';
 import { formItemLayout, formatFormData } from './utils';
 const FormItem = Form.Item;
