@@ -65,7 +65,39 @@ class ADD extends React.Component {
                             )}
                         </FormItem>
                     </Col>
+                    <Col span={20}>
+                        <FormItem {...formItemLayout} label="价格">
+                            {getFieldDecorator('price', {
+                                rules: [
+                                    {
+                                        required: true,
+                                        message: '请填写价格',
+                                    },
 
+                                    {
+                                        type: 'integer',
+                                        message: '价格为整数',
+                                    },
+                                ],
+                            })(<InputNumber placeholder="请填写" style={{ width: '100%' }} />)}
+                        </FormItem>
+                    </Col>
+                    <Col span={20}>
+                        <FormItem {...formItemLayout} label="类型">
+                            {getFieldDecorator('roomType', {
+                                rules: [{
+                                    required: true,
+                                    message: '请填写类型',
+                                }],
+                            })(
+                                <Select placeholder= "请选择">
+                                    <Option value={'01'}>自理能力强</Option>
+                                    <Option value={'02'}>自理能力弱</Option>
+                                    <Option value={'03'}>无自理能力</Option>
+                                </Select>
+                            )}
+                        </FormItem>
+                    </Col>
                    
                     <Col span={20}>
                         <FormItem {...formItemLayout} label="房间状态">

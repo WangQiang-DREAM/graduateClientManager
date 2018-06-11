@@ -337,6 +337,8 @@ export const asyncAdd = contents => {
             let result = await request(urls.add + '?body=' + encodeURIComponent(JSON.stringify({
                 roomOrder: contents[0].roomOrder,
                 direction: contents[0].direction,
+                price: contents[0].price,
+                roomType: contents[0].roomType,
                 totalNum: contents[0].totalNum,
                 area: contents[0].area,
                 creator: getState().user.info.name,

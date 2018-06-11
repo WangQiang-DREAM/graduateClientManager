@@ -35,6 +35,19 @@ class List extends React.Component {
         };
         this.props.updateStatus(content);
     }
+    typeView = roomType =>{
+        switch (roomType) {
+            case '01':
+                return '自理能力强'
+                break;
+            case '02':
+                return '自理能力弱'
+                break;
+            case '03':
+                return '无自理能力'
+                break;
+        }
+    }
     onLine = (roomOrder, image) => {
         if (image == undefined) {
             successError('warning', '请将房间图片补充完整才可上线！');
@@ -98,6 +111,7 @@ class List extends React.Component {
         return (
             <Spin spinning={isLoading} tip="加载中...">
                 <Table
+                    expandedRowRender={ record => <p style={{ margin: 0 }}>价格：{record.price} <span style = {{marginLeft: 10 }}>类型：{this.typeView(record.roomType)}</span></p>}
                     dataSource={list}
                     pagination={{
                         ...pagination,
@@ -158,16 +172,6 @@ class List extends React.Component {
                             return formatViewData('commentNum', text);
                         }}
                     />
-
-                    <Column
-                        title="负责人"
-                        dataIndex="creator"
-                        key="creator"
-                        render={text => {
-                            return formatViewData('creator', text);
-                        }}
-                    />
-
                     <Column
                         title="上传时间"
                         dataIndex="createTime"

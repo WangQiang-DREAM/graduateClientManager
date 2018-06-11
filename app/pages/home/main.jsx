@@ -21,15 +21,15 @@ class Main extends React.Component {
     componentDidMount() {
         this.props.asyncGet();
         this.props.getLogs();
-        this.showChart()
+        this.showChart();
     }
     getVirtulData = year =>{
         year = year || '2017';
-        var date = +echarts.number.parseDate(year + '-01-01');
-        var end = +echarts.number.parseDate((+year + 1) + '-01-01');
-        var dayTime = 3600 * 24 * 1000;
-        var data = [];
-        for (var time = date; time < end; time += dayTime) {
+        let date = +echarts.number.parseDate(year + '-01-01');
+        let end = +echarts.number.parseDate((+year + 1) + '-01-01');
+        let dayTime = 3600 * 24 * 1000;
+        let data = [];
+        for (let time = date; time < end; time += dayTime) {
             data.push([
                 echarts.format.formatTime('yyyy-MM-dd', time),
                 Math.floor(Math.random() * 100 )
@@ -71,7 +71,7 @@ class Main extends React.Component {
                 splitLine: {
                     show: true,
                     lineStyle: {
-                        color: '#444',
+                        color: '#666',
                         width: 4,
                         type: 'solid'
                     }
